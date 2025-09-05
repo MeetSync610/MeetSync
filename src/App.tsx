@@ -1,0 +1,42 @@
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import AuthLayout from "./components/AuthLayout";
+// import Hero from "./components/Hero";
+// import Steps from "./components/Steps";
+// import Features from "./components/Features";
+import Friends from "./components/Friends";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Profile from "./components/Profile";
+import Schedule from "./components/Schedule";
+import Sync from "./components/Sync";
+// import Faq from "./components/Faq";
+import Terms from "./components/Terms";
+import Privacy from "./components/Privacy";
+import LandingLayout from "./components/LandingLayout";
+import HomeLanding from "./components/HomeLanding";
+
+export default function App() {
+  return (
+      <Routes>
+        <Route element={<LandingLayout />}>
+        <Route path="/" element={<HomeLanding />} />
+      </Route>
+
+      <Route element={<Layout />}>
+        {/* <Route path="/" element={<><Hero /><Steps /><Features /><Faq /></>} /> esto lo pase al HomeLanding */}
+        <Route path="/friends" element={<Friends />} />
+        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/schedule" element={<Schedule />} />
+        <Route path="/sync" element={<Sync />} />
+        <Route path="/terminos" element={<Terms />} />
+        <Route path="/privacidad" element={<Privacy />} />
+      </Route>
+
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} /> 
+        <Route path="/register" element={<Register />} />
+      </Route>
+    </Routes>
+  );
+}

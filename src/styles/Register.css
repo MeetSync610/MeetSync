@@ -1,0 +1,21 @@
+.register {
+  width: 100%;
+  max-width: 520px;
+}
+
+.register__form {
+  display: grid;
+  gap: 1rem;
+}
+
+.register__submit {
+  width: 100%;
+  justify-content: center;
+}
+.register__terms {
+  font-size: .8rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+.register__terms .link { font-weight: 500; }

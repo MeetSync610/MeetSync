@@ -1,0 +1,30 @@
+.login {
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;     
+  justify-content: center; 
+  min-height: calc(100vh - 200px); 
+}
+.authcard {
+  border-radius: 1rem;
+  border: 1px solid rgba(51,65,85,.6);
+  background: rgba(2,6,23,.4);
+  backdrop-filter: blur(6px);
+  padding: 5rem;
+  box-shadow: 0 0 20px 1px #38bdf8;
+  color: #e2e8f0;
+}
+.authcard__title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 2.5rem 0;
+  text-align: center;   /* 👈 esto */
+}
+
+.authcard__body { display: block; }
+
+.authcard__footer {
+  margin-top: .75rem;
+  font-size: .9rem;
+  color: #94a3b8;
+}

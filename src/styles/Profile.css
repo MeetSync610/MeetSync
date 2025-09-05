@@ -1,0 +1,13 @@
+.profile { color:#e2e8f0; }
+.profile .container { max-width: 1100px; padding-block: 2.5rem; }
+
+.profile__grid { display:grid; gap:1rem; grid-template-columns: 1fr; }
+/* .profile__left { }
+.profile__right { } */
+.profile__title { margin:0 0 .75rem 0; font-size:1.05rem; font-weight:600; }
+.profile__friends { display:grid; gap:.9rem; grid-template-columns: 1fr; }
+
+@media (min-width: 900px){
+  .profile__grid { grid-template-columns: 340px 1fr; gap:1.25rem; }
+  .profile__friends { grid-template-columns: 1fr 1fr; }
+}

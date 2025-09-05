@@ -1,0 +1,120 @@
+
+.nav-header {
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid #334155;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  color: #e2e8f0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+
+
+.nav {
+  padding: .75rem 0;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand { display: flex; gap: .5rem; align-items: center; text-decoration: none; color: inherit; }
+.brand__img { width: 2.6rem; height: 2.6rem; border-radius: .6rem; border: 1px solid #334155; }
+.brand__text { font-weight: 600; font-size: 1.125rem; }
+.brand__accent { color: #0ea5e9; }
+
+.nav__links { display: flex; gap: 1.25rem; }
+.nav__links a { color: #cbd5e1; text-decoration: none; transition: color .2s; }
+.nav__links a:hover,
+.nav__links a.active { color: #38bdf8; }
+
+.nav__actions { display: flex; gap: .5rem; }
+.btn-outline {
+  display: inline-flex; gap: .5rem; align-items: center;
+  padding: .5rem .75rem; border: 1px solid #334155; border-radius: .5rem;
+  color: #e2e8f0; text-decoration: none; transition: background .15s, transform .15s, border-color .15s, color .15s;
+}
+.btn-outline svg { width: 1.1em; height: 1.1em; }
+.btn-outline:hover { background: #1e293b; border-color: #475569; transform: translateY(-1px); }
+.btn-primary { background: linear-gradient(135deg,#1d4ed8,#0ea5e9); border-color: transparent; }
+.btn-primary:hover { filter: brightness(1.05); }
+
+
+.nav__toggle { display: none; }
+
+
+.nav__mobile {
+  position: fixed; inset: 0 0 auto 0;      /* top:0, left:0, right:0 */
+  transform: translateY(-100%);
+  background: rgba(2, 6, 23, 0.96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid #334155;
+  transition: transform .25s ease;
+  z-index: 60; 
+}
+.nav__mobile.is-open { transform: translateY(0%); }
+
+.nav__mobile-inner {
+  max-width: 1200px; margin: 0 auto; padding: 5rem 1rem 1.25rem;
+  display: grid; gap: 1rem;
+}
+.nav__group { display: grid; gap: .5rem; }
+
+.nav__m-link {
+  display: block; padding: .9rem 1rem; border-radius: .75rem;
+  color: #cbd5e1; text-decoration: none; border: 1px solid #334155;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.nav__m-link:hover, .nav__m-link.active {
+  background: rgba(56,189,248,.08); border-color: rgba(56,189,248,.18); color: #e2e8f0;
+}
+
+.nav__m-btn {
+  display: flex; align-items: center; gap: .5rem;
+  justify-content: center;
+  padding: .85rem 1rem; border-radius: .75rem;
+  border: 1px solid #334155; color: #e2e8f0; text-decoration: none;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+.nav__m-btn:hover { background: #1e293b; border-color: #475569; transform: translateY(-1px); }
+
+.nav__m-btn--primary { background: linear-gradient(135deg,#1d4ed8,#0ea5e9); border-color: transparent; }
+.nav__m-btn--primary:hover { filter: brightness(1.05); }
+
+
+.nav__overlay {
+  position: fixed; inset: 0; z-index: 55;
+  background: rgba(0,0,0,.5);
+  border: 0; padding: 0; margin: 0;
+}
+
+
+@media (max-width: 960px){
+  /* Ocultar desktop, mostrar hamburguesa */
+  .nav__links--desktop, .nav__actions--desktop { display: none; }
+  .nav__toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    border: 1px solid #334155; border-radius: .6rem;
+    background: transparent; color: #e2e8f0;
+    transition: background .15s, border-color .15s;
+  }
+  .nav__toggle:hover { background: #1e293b; border-color: #475569; }
+}
+
+@media (min-width: 961px){
+  /* Asegurar que el panel móvil no interfiera en desktop */
+  .nav__mobile { display: none; }
+  .nav__overlay { display: none; }
+}
+.nav__mobile-close {
+  position: absolute;
+  top: .9rem;
+  right: 1rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border: 1px solid #334155; border-radius: .6rem;
+  background: transparent; color: #e2e8f0;
+  transition: background .15s, border-color .15s;
+  z-index: 1;
+}
+.nav__mobile-close:hover { background: #1e293b; border-color: #475569; }

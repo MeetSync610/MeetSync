@@ -1,0 +1,29 @@
+.footer { border-top: 1px solid #334155; background: #0f172a; }
+.footer__inner {
+  max-width: 1200px; margin: 0 auto; padding: 2.5rem 1rem;
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; color: #e2e8f0;
+}
+.footer__brand { display: flex; align-items: center; gap: .75rem; }
+.footer__img { height: 32px; width: 32px; border-radius: 8px; border: 1px solid #334155; }
+.footer__copy { font-size: .9rem; color: #94a3b8; }
+.footer__links { display: flex; gap: 1rem; }
+.footer__links a { color: #cbd5e1; text-decoration: none; transition: color .2s; }
+.footer__links a:hover { color: #38bdf8; }
+
+.footer__links,
+.footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer__links a,
+.footer__legal a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer__links a:hover,
+.footer__legal a:hover {
+  color: #38bdf8; /* celestito */
+}

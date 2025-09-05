@@ -1,0 +1,13 @@
+.pside {
+  border-radius: 1rem; border: 1px solid rgba(51,65,85,.6);
+  background: rgba(2,6,23,.4); backdrop-filter: blur(6px);
+  padding: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  color: #e2e8f0;
+}
+.pside__head { display:flex; align-items:center; gap:1rem; }
+.pside__avatar { width:64px; height:64px; border-radius:9999px; background:#1f2937; box-shadow:0 0 0 2px #334155 inset; }
+.pside__info h2 { margin:0; font-size:1.25rem; font-weight:600; }
+.pside__info p { margin:.15rem 0 0; font-size:.85rem; color:#94a3b8; }
+
+.pside__actions { margin-top:1rem; display:flex; flex-direction:column; gap:.6rem; }
+.pside__btn { justify-content:center; }

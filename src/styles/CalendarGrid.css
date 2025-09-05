@@ -1,0 +1,30 @@
+.calendar {
+  display: grid;
+  grid-template-columns: 64px repeat(7, minmax(120px, 1fr));
+  grid-auto-rows: 64px;
+  min-width: 900px; /* permite scroll horizontal en pantallas chicas */
+  border-top: 1px solid rgba(71,85,105,.5);
+  border-right: 1px solid rgba(71,85,105,.3);
+}
+
+/* encabezado */
+/* .calendar__corner { } */
+.calendar__day {
+  display:flex; align-items:center; justify-content:center;
+  font-size:.9rem; color:#cbd5e1;
+  border-right: 1px solid rgba(71,85,105,.3);
+  border-bottom: 1px solid rgba(71,85,105,.5);
+}
+
+/* filas */
+.calendar__hour {
+  font-size:.8rem; color:#94a3b8; padding:0 .5rem;
+  display:flex; align-items:center;
+  border-right: 1px solid rgba(71,85,105,.3);
+  border-bottom: 1px solid rgba(71,85,105,.5);
+}
+.calendar__cell {
+  border-right: 1px solid rgba(71,85,105,.3);
+  border-bottom: 1px solid rgba(71,85,105,.5);
+  position: relative;
+}

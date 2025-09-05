@@ -1,0 +1,6 @@
+.pagehdr {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.75rem; margin-bottom:1.25rem; color:#e2e8f0;
+}
+.pagehdr h1 { font-size:1.25rem; font-weight:600; margin:0; }
+.pagehdr__right { display:flex; gap:.6rem; flex-wrap:wrap; }

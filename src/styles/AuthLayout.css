@@ -1,0 +1,10 @@
+/* Ocupa toda la pantalla y centra el contenido de auth */
+.AuthLayout, .AuthMain {
+  min-height: 100vh;
+}
+.AuthMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;          /* margen respiración */
+}

@@ -1,0 +1,17 @@
+.login {
+  width: 100%;
+  max-width: 520px;   /* ancho típico de login */
+}
+
+.login__form {
+  display: grid;
+  gap: 2rem;
+}
+
+.login__submit {
+  width: 100%;
+  justify-content: center;
+}
+
+.link { color: #38bdf8; text-decoration: none; }
+.link:hover { text-decoration: underline; }
