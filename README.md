@@ -1,69 +1,51 @@
-# React + TypeScript + Vite
+<h1 align="center">MeetSync</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <em>Sincronizá horarios con tus amigos. Menos chat eterno, más juntadas reales.</em>
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  <img src="public/logo.png" alt="MeetSync" width="96" style="border-radius:12px" />
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p align="center">
+  <a href="https://github.com/tu-usuario/MeetSync/issues">Reportar un bug</a> ·
+  <a href="https://github.com/tu-usuario/MeetSync/discussions">Sugerir una idea</a>
+</p>
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Descripción
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**MeetSync** es una aplicación web (React + Vite + TypeScript) pensada para coordinar horarios entre amigos de forma rápida y visual.  
+Los usuarios marcan su disponibilidad semanal, conectan con amigos y (en futuras versiones) verán sugerencias de lugares/eventos y coordinarán puntos de encuentro.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+> Proyecto académico — Generación T. Equipo: Thiago (líder) & Santino (PO) + colaboradores.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ✨ Features (MVP)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Home con **hero** + beneficios + **FAQ** (acordeón animado).
+- **Navegación SPA** con React Router.
+- **Amigos** (listado estático por ahora).
+- **Login / Register** con layout dedicado (sin Nav/Footer).
+- **Perfil** (sección con tarjetas de amigos).
+- **Schedule** (maqueta de calendario semanal).
+- **Sync** (UI para crear sincronización 1 a 1 o grupal).
+- **Nav responsive** con **menú hamburguesa** y overlay en mobile.
+- **Dark UI** minimalista, sin Tailwind (CSS modular por componente).
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+> Roadmap: disponibilidad real, cruces automáticos, recordatorios, lugares sugeridos, mapa de punto de encuentro, notificaciones.
+
+---
+
+## 🧱 Stack
+
+- **Frontend:** React 18, Vite, TypeScript, React Router
+- **Estilos:** CSS modular (sin Tailwind).  
+- **Íconos:** lucide-react
+- **Control de versiones:** Git/GitHub
+
+> Futuro: **Node.js** (API), **SQL Server** (DB).
+
