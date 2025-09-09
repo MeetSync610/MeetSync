@@ -1,4 +1,4 @@
-import "../styles/register.css";
+import "../styles/Register.css";
 import { Link } from "react-router-dom";
 import { UserPlus } from "lucide-react";
 import AuthCard from "./AuthCard";
