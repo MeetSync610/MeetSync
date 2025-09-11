@@ -1,4 +1,4 @@
-.faq { color:#e2e8f0; }
+.faq { color: var(--text); }
 .faq .container { max-width:1100px; padding-block: 1.5rem 2.5rem; }
 
 .faq__title{
@@ -6,6 +6,7 @@
   font-size: 1.75rem;
   font-weight: 600;
   display: flex; align-items: center; gap: .5rem;
+  color: var(--text);
 }
 
 .faq__list{ display: grid; gap: .75rem; }
@@ -14,7 +15,7 @@
 .faq__item{
   border-radius: 1rem;
   border: 1px solid rgba(51,65,85,.6);
-  background: rgba(2,6,23,.4);
+  background: var(--bg);
   backdrop-filter: blur(6px);
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,.25);
@@ -39,8 +40,8 @@
 .faq__item[open] .faq__chevron{ transform: rotate(180deg); }
 
 /* --- HOVER / CLICK (solo mientras clickeás) --- */
-.faq__summary:hover{ background: rgba(56,189,248,.08); }
-.faq__summary:active{ background: rgba(56,189,248,.08); } /* mismo color que hover */
+.faq__summary:hover{ background: var(--bg); }
+.faq__summary:active{ background: var(--bg); } /* mismo color que hover */
 
 /* --- PANEL ANIMADO POR HEIGHT --- */
 .faq__panel{
@@ -51,10 +52,10 @@
 
 .faq__content{
   padding: 1.2rem 2rem;
-  color:#cbd5e1;
+  color: var(--text);
   line-height:1.55;
   border-top: 1px solid rgba(51,65,85,.5);
-  background-color: #0004;
+  background: var(--bg);
 }
 
 /* responsive */

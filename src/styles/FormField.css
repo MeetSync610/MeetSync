@@ -2,24 +2,24 @@
 
 .formfield label {
   font-size: .9rem;
-  color: #cbd5e1;
+  color: var(--text);
 }
 
 .formfield input {
   width: 100%;
   padding: .75rem .9rem;
   border-radius: .6rem;
-  background: #0b1220;
+  background: var(--bg);
   border: 1px solid #334155;
-  color: #e2e8f0;
+  color: var(--text);
   outline: none;
   transition: border-color .15s, box-shadow .15s;
 }
 
 .formfield input:focus {
-  border-color: #38bdf8;
+  color: var(--text);
   box-shadow: 0 0 0 3px rgba(56,189,248,.15);
 }
-.formfield__hint { margin-top: .25rem; font-size: .8rem; color: #94a3b8; }
-.formfield__error { margin-top: .25rem; font-size: .8rem; color: #fca5a5; }
+.formfield__hint { margin-top: .25rem; font-size: .8rem; color: var(--text); }
+.formfield__error { margin-top: .25rem; font-size: .8rem; color: var(--text); }
 .formfield--error input { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
