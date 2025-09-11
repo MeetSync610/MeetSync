@@ -13,13 +13,14 @@ import Sync from "./components/Sync";
 // import Faq from "./components/Faq";
 import Terms from "./components/Terms";
 import Privacy from "./components/Privacy";
+// import Support from "./components/Support";
 import LandingLayout from "./components/LandingLayout";
 import HomeLanding from "./components/HomeLanding";
 
 export default function App() {
   return (
-      <Routes>
-        <Route element={<LandingLayout />}>
+    <Routes>
+      <Route element={<LandingLayout />}>
         <Route path="/" element={<HomeLanding />} />
       </Route>
 
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/sync" element={<Sync />} />
         <Route path="/terminos" element={<Terms />} />
         <Route path="/privacidad" element={<Privacy />} />
+        {/* <Route path="/soporte" element={<Support />}/> */}
       </Route>
 
       <Route element={<AuthLayout />}>

@@ -1,17 +1,17 @@
 import "../styles/CalendarGrid.css";
 
 type Props = {
-  startHour?: number; // 8
-  endHour?: number;   // 22
+  startHour?: number; // 0
+  endHour?: number;   // 24
 };
 
-const DAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-export default function CalendarGrid({ startHour = 8, endHour = 22 }: Props) {
+export default function CalendarGridWeek({ startHour = 0, endHour = 24 }: Props) {
   const hours = Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i);
 
   return (
-    <div className="calendar">
+    <div className="calendar-week">
       {/* fila 0: esquina vacía + nombres de días */}
       <div className="calendar__corner" />
       {DAYS.map((d) => (
@@ -32,7 +32,7 @@ function HourRow({ hour }: { hour: number }) {
     <>
       <div className="calendar__hour">{label}</div>
       {Array.from({ length: 7 }).map((_, i) => (
-        <div key={i} className="calendar__cell" />
+        <div key={i} id={i + "-" + hour} className="calendar__cell" />
       ))}
     </>
   );

@@ -1,14 +1,14 @@
 import "../styles/WeekNav.css";
 import { ArrowLeft, ArrowRight, Clock4 } from "lucide-react";
 
-export default function WeekNav() {
+export default function MonthNav() {
   return (
     <div className="weeknav">
       <button className="btn-outline">
-        <ArrowLeft size={16} /> Anterior
+        <ArrowLeft size={16} /> Mes anterior
       </button>
       <button className="btn-outline">
-        Próximo <ArrowRight size={16} />
+        Próximo mes <ArrowRight size={16} />
       </button>
       <button className="btn-primary">
         <Clock4 size={18} /> Hoy

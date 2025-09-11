@@ -1,4 +1,4 @@
-.schedule { color:#e2e8f0; }
+.schedule { color:#e2e8f0; overflow-x: hidden;}
 .schedule .container { max-width: 1100px; padding-block: 2.2rem; }
 
 .schedule__head {
@@ -26,7 +26,24 @@
   border:1px solid #334155; background:transparent; color:#e2e8f0;
 }
 
-.schedule__gridwrap { overflow-x:auto; }
 .schedule__hint { color:#94a3b8; font-size:.8rem; margin:.7rem 0 0; }
 
 .schedule__cta { margin-top:1rem; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.3);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  display: none;
+}
+.setBlock {
+  background: #0f172a;
+  position: absolute;
+  border-radius: .8rem;
+  padding: 2rem;
+  text-align: center;
+}

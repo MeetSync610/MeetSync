@@ -1,10 +1,21 @@
-.calendar {
-  display: grid;
+.calendar-week {
   grid-template-columns: 64px repeat(7, minmax(120px, 1fr));
+  background: linear-gradient(rgba(2, 6, 23, .4) 30%, darkblue 60%, rgba(2, 6, 23, .4));
+  height: 50vh;
+  overflow-y: scroll;
+  background-attachment: local;
+}
+.calendar-week, .calendar-month {
+  display: grid;
   grid-auto-rows: 64px;
   min-width: 900px; /* permite scroll horizontal en pantallas chicas */
   border-top: 1px solid rgba(71,85,105,.5);
   border-right: 1px solid rgba(71,85,105,.3);
+}
+.calendar-month {
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  overflow-y: auto;
+  height: auto;
 }
 
 /* encabezado */
