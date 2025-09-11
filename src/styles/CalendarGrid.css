@@ -22,14 +22,14 @@
 /* .calendar__corner { } */
 .calendar__day {
   display:flex; align-items:center; justify-content:center;
-  font-size:.9rem; color:#cbd5e1;
+  font-size:.9rem; color: var(--text);
   border-right: 1px solid rgba(71,85,105,.3);
   border-bottom: 1px solid rgba(71,85,105,.5);
 }
 
 /* filas */
 .calendar__hour {
-  font-size:.8rem; color:#94a3b8; padding:0 .5rem;
+  font-size:.8rem; color: var(--text); padding:0 .5rem;
   display:flex; align-items:center;
   border-right: 1px solid rgba(71,85,105,.3);
   border-bottom: 1px solid rgba(71,85,105,.5);

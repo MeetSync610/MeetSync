@@ -3,9 +3,25 @@ import { Link, NavLink } from "react-router-dom";
 import "../styles/Nav.css";
 import logo from "../assets/logo2.png";
 import { CalendarArrowUp, Link as LinkIcon, LogIn, Menu, X } from "lucide-react";
+import { Sun, Moon } from "lucide-react"; // Si no tenés lucide-react, usá cualquier ícono
+
+function getInitialTheme() {
+  const saved = localStorage.getItem("theme");
+  if (saved) return saved;
+  if (window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
+  return "dark";
+}
+
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.body.classList.toggle("light", theme === "light");
+    document.body.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   // Cerrar al cambiar de ruta si el user toca un link
   useEffect(() => {
@@ -47,6 +63,14 @@ export default function Nav() {
             <NavLink to="/login" className="btn-outline btn-primary" onClick={() => setOpen(false)}>
               <LogIn size={18}/> Entrar
             </NavLink>
+            <button
+              className="btn-theme"
+              aria-label="Cambiar tema"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              style={{ marginLeft: 8 }}
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />} Tema
+            </button>
           </div>
 
           {/* Toggle móvil */}
@@ -88,6 +112,14 @@ export default function Nav() {
             <NavLink to="/login" onClick={() => setOpen(false)} className="nav__m-btn nav__m-btn--primary">
               <LogIn size={18}/> Entrar
             </NavLink>
+            <button
+              className="btn-theme"
+              aria-label="Cambiar tema"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              style={{ marginTop: 8 }}
+            >
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />} Tema
+            </button>
           </div>
         </div>
       </div>

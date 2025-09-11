@@ -1,4 +1,4 @@
-.profile { color:#e2e8f0; }
+.profile { color: var(--text); }
 .profile .container { max-width: 1100px; padding-block: 2.5rem; }
 
 .profile__grid { display:grid; gap:1rem; grid-template-columns: 1fr; }

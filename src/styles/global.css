@@ -1,3 +1,36 @@
+:root {
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --footer-bg: #0f172a;      /* color original del footer en modo oscuro */
+  --dark-card-bg: rgba(2, 6, 23, 0.4);
+}
+
+body, #root {
+  background: var(--bg);
+  color: var(--text);
+}
+
+
+body.light, #root.light {
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --footer-bg: #f8fafc;
+}
+
+/* Modo oscuro (opcional) */
+body.dark, #root.dark {
+  --bg: #0f172a;
+  --text: #e2e8f0;
+  --dark-card-bg: rgba(2, 6, 23, 0.4);
+}
+
+
+
+/* Reset básico */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
 /* correciones con chat gpt ya que algo andaba mal */
 
 /* Reset básico */
@@ -5,8 +38,6 @@
 html, body, #root { height: 100%; }
 body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 
-/* Fondo y color global */
-body, #root { background: #0f172a; color: #e2e8f0; }
 
 /* Layout de app para que el fondo ocupe toda la altura */
 .App { min-height: 100%; display: flex; flex-direction: column; }
@@ -29,6 +60,16 @@ body, #root { background: #0f172a; color: #e2e8f0; }
   border-radius:.75rem; color:#e2e8f0; text-decoration:none; border:1px solid #334155;
 }
 
+/* Sync.css o Global.css */
+body.light .sync .btn-outline {
+  color: var(--text);     /* texto blanco */
+}
+
+body.light .sync .btn-outline svg {
+  color: var(--text);       /* iconos blancos */
+}
+
+
 /* Tipografías y encabezados */
 h1, h2, h3 { margin: 0; }
 
@@ -48,3 +89,166 @@ html { font-size: 16px; }
 @media (min-width: 1800px) and (min-height: 900px) {
   html { font-size: 21px; }  /* ~131% */
 }
+
+/* Forzar fondo oscuro en modo dark */
+body.dark .card,
+body.dark .formfield input,
+body.dark .formfield textarea {
+  background: var(--dark-card-bg) !important;
+  backdrop-filter: blur(6px);
+  border-radius: 1rem; /* opcional, igual que tus cards */
+}
+
+
+/* Fondo y sombra para los items FAQ (summary) en modo dark */
+body.dark .faq__summary {
+  background: #02061766;  /* mismo color que tenías */
+  backdrop-filter: blur(6px);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  color: var(--text);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+/* Hover: resplandor idéntico al original */
+body.dark .faq__summary:hover {
+  background: #020617aa;  /* un poquito más brillante que el original */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+
+/* --- FAQ Items modo claro --- */
+body.light .faq__summary {
+  background: rgba(240, 241, 244, 0.4); /* fondo semitransparente claro */
+  backdrop-filter: blur(6px);
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  color: var(--text);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+body.light .faq__summary:hover {
+  background: rgba(240, 241, 244, 0.67); /* un poco más brillante al pasar el mouse */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+
+/* --- Botones con sombra en hover --- */
+
+/* Botones modo oscuro */
+body.dark .btn-outline:hover,
+body.dark .btn-secondary:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Botones modo claro */
+body.light .btn-outline:hover,
+body.light .btn-secondary:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+
+/* Asegurarse que todos los botones y links tipo botón tengan cursor pointer */
+button,
+input[type="button"],
+input[type="submit"],
+a.btn-outline,
+a.btn-theme {
+  cursor: pointer;
+}
+
+/* Hover: efecto de iluminación */
+button:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+a.btn-outline:hover,
+a.btn-theme:hover {
+  transform: translateY(-1px); /* se levanta un poquito */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); /* efecto de resplandor/iluminación */
+}
+
+
+/* Navbar modo oscuro */
+body.dark .nav-header {
+  background-color: rgba(15, 23, 42, 0.7); /* azul oscuro semi-transparente */
+  backdrop-filter: blur(8px);
+  color: var(--text);
+}
+
+/* Navbar modo claro */
+body.light .nav-header {
+  background-color: rgba(248, 250, 252, 0.7); /* blanco semi-transparente */
+  backdrop-filter: blur(8px);
+  color: var(--text);
+}
+
+/* Botón Tema - estilo base */
+.btn-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid #334155;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer; /* importante para que se vea clickeable */
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+/* Botón Tema - desktop */
+.nav__actions .btn-outline:hover,
+.nav__actions .btn-theme:hover {
+  background: rgba(255,255,255,0.1); /* efecto de iluminación */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
+/* Botón Tema - móvil */
+.nav__mobile .btn-theme:hover,
+.nav__mobile .nav__m-btn:hover {
+  background: rgba(255,255,255,0.1); /* efecto de iluminación */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
+/* Todos los elementos clickeables */
+a, button, input[type="button"], input[type="submit"], .clickable {
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+/* Hover general para todos los clickeables */
+a:hover, button:hover, input[type="button"]:hover, input[type="submit"]:hover, .clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+
+/* Hover del botón de tema en modo claro */
+body.light .btn-theme:hover {
+  background: rgba(0, 0, 0, 0.05);  /* un gris clarito semitransparente */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15); /* sombra ligera */
+  transform: translateY(-1px);
+}
+
+/* --- Hover clickeable visible en modo claro para TODOS los elementos --- */
+body.light button:hover,
+body.light input[type="button"]:hover,
+body.light input[type="submit"]:hover,
+body.light a.btn-primary:hover,
+body.light a.btn-secondary:hover,
+body.light a.btn-outline:hover,
+body.light a.btn-theme:hover,
+body.light .clickable:hover,
+body.light .faq__summary:hover {
+  transform: translateY(-1px);                 /* se levanta un poquito */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);     /* sombra ligera y visible */
+  background: rgba(0,0,0,0.05);               /* fondo ligeramente más claro para indicar clickeable */
+  transition: transform 0.15s, box-shadow 0.2s, background 0.15s;
+}
+
