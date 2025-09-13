@@ -34,14 +34,14 @@
   position: fixed;
   inset: 0;
   backdrop-filter: blur(6px);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg);
   align-items: center;
   justify-content: center;
   z-index: 1000;
   display: none;
 }
 .setBlock {
-  background: #0f172a;
+  background: var(--bg);
   position: absolute;
   border-radius: .8rem;
   padding: 2rem;
