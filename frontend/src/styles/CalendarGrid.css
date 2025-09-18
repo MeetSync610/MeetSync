@@ -5,6 +5,7 @@
   overflow-y: scroll;
   background-attachment: local;
 }
+
 .calendar-week, .calendar-month {
   display: grid;
   grid-auto-rows: 64px;
@@ -12,30 +13,66 @@
   border-top: 1px solid rgba(71,85,105,.5);
   border-right: 1px solid rgba(71,85,105,.3);
 }
+
+/* calendario mensual */
 .calendar-month {
   grid-template-columns: repeat(7, minmax(120px, 1fr));
   overflow-y: auto;
   height: auto;
 }
 
-/* encabezado */
-/* .calendar__corner { } */
+/* encabezados de días */
 .calendar__day {
-  display:flex; align-items:center; justify-content:center;
-  font-size:.9rem; color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  color: var(--text);
+  border-right: 1px solid rgba(71,85,105,.3);
+  border-bottom: 1px solid rgba(71,85,105,.5);
+  position: relative;
+}
+
+/* filas de horas */
+.calendar__hour {
+  font-size: .8rem;
+  color: var(--text);
+  padding: 0 .5rem;
+  display: flex;
+  align-items: center;
   border-right: 1px solid rgba(71,85,105,.3);
   border-bottom: 1px solid rgba(71,85,105,.5);
 }
 
-/* filas */
-.calendar__hour {
-  font-size:.8rem; color: var(--text); padding:0 .5rem;
-  display:flex; align-items:center;
-  border-right: 1px solid rgba(71,85,105,.3);
-  border-bottom: 1px solid rgba(71,85,105,.5);
-}
+/* celdas */
 .calendar__cell {
   border-right: 1px solid rgba(71,85,105,.3);
   border-bottom: 1px solid rgba(71,85,105,.5);
   position: relative;
+}
+
+/* bloques ocupados */
+.calendar__cell.occupied, .calendar__day.occupied {
+  background-color: #f87171; /* rojo suave */
+  color: white;
+  font-weight: bold;
+}
+
+/* etiqueta de bloque dentro de la celda (para mensual) */
+.block-label {
+  font-size: 10px;
+  margin-top: 2px;
+  background-color: rgba(248, 113, 113, 0.9);
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
