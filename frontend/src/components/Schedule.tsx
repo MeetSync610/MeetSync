@@ -10,7 +10,9 @@ import type { Block } from "../types";
 
 export default function Schedule() {
   const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-  const API_BASE = import.meta.env.VITE_API_URL ?? 
+  
+  // --- API base según entorno
+  const API_BASE = import.meta.env.VITE_API_URL ??
     (import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "https://meetsync-9g91.onrender.com/api");
 
   // --- Estados
@@ -36,71 +38,63 @@ export default function Schedule() {
     }
   }, []);
 
-  const fetchGoogleEvents = () => {
-    fetch(`${API_BASE}/calendar/events`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.events) {
-          const googleBlocks: Block[] = data.events.map((event: any) => {
-            const start = new Date(event.start.dateTime || event.start.date);
-            const end = new Date(event.end.dateTime || event.end.date);
-            return {
-              id: event.id,
-              googleId: event.id,
-              day: start.toISOString().split("T")[0],
-              start: start.toTimeString().slice(0,5),
-              finish: end.toTimeString().slice(0,5),
-              summary: event.summary || "Sin título",
-              color: "#60a5fa",
-            };
-          });
-          setBlocks(googleBlocks);
-        }
-      })
-      .catch(err => console.error("fetch events error:", err));
+  const fetchGoogleEvents = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/calendar/events`);
+      const data = await res.json();
+      if (data.success && data.events) {
+        const googleBlocks: Block[] = data.events.map((event: any) => {
+          const start = new Date(event.start.dateTime || event.start.date);
+          const end = new Date(event.end.dateTime || event.end.date);
+          return {
+            id: event.id,
+            googleId: event.id,
+            day: start.toISOString().split("T")[0],
+            start: start.toTimeString().slice(0,5),
+            finish: end.toTimeString().slice(0,5),
+            summary: event.summary || "Sin título",
+            color: "#60a5fa",
+          };
+        });
+        setBlocks(googleBlocks);
+      }
+    } catch (err) {
+      console.error("fetch events error:", err);
+    }
   };
 
   useEffect(() => { fetchGoogleEvents(); }, []);
 
   // --- Navegación semanal
   const goToToday = () => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  setCurrentDate(today);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    setCurrentDate(today);
 
-  const todayStr = today.toISOString().split("T")[0];
+    const todayStr = today.toISOString().split("T")[0];
+    const exists = blocks.some(b => b.day === todayStr && b.start === "08:00" && b.finish === "09:00");
+    if (exists) return;
 
-  // Revisar si ya existe
-  const exists = blocks.some(
-    b => b.day === todayStr && b.start === "08:00" && b.finish === "09:00"
-  );
-  if (exists) return;
+    const newBlock: Block = {
+      day: todayStr,
+      start: "08:00",
+      finish: "09:00",
+      summary: "No disponible",
+      color: "#f87171",
+    };
 
-  const newBlock: Block = {
-    day: todayStr,
-    start: "08:00",
-    finish: "09:00",
-    summary: "No disponible",
-    color: "#f87171",
-  };
-
-  // --- Guardar en Google Calendar vía API
-  fetch(`${API_BASE}/calendar`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newBlock),
-  })
+    // Guardar en Google Calendar
+    fetch(`${API_BASE}/calendar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newBlock),
+    })
     .then(res => res.json())
     .then(data => {
-      if (data?.data?.id) {
-        // Solo agregamos el bloque local **después de que Google devuelva el ID**
-        setBlocks(prev => [...prev, { ...newBlock, googleId: data.data.id }]);
-      }
+      if (data?.data?.id) setBlocks(prev => [...prev, { ...newBlock, googleId: data.data.id }]);
     })
     .catch(err => console.error("Error creando bloque en Google:", err));
-};
-
-
+  };
 
   const goPrevWeek = () => setCurrentDate(prev => { const d = new Date(prev); d.setDate(d.getDate() - 7); return d; });
   const goNextWeek = () => setCurrentDate(prev => { const d = new Date(prev); d.setDate(d.getDate() + 7); return d; });
@@ -113,24 +107,17 @@ export default function Schedule() {
   const showForm = (index: number | null = null) => {
     if (index !== null) {
       const b = blocks[index];
-      setInputDay(b.day);
-      setInputStart(b.start);
-      setInputFinish(b.finish);
-      setInputSummary(b.summary);
-      setInputColor(b.color);
-      setEditingIndex(index);
+      setInputDay(b.day); setInputStart(b.start); setInputFinish(b.finish);
+      setInputSummary(b.summary); setInputColor(b.color); setEditingIndex(index);
     } else {
       setInputDay(new Date().toISOString().split("T")[0]);
-      setInputStart("08:00");
-      setInputFinish("09:00");
-      setInputSummary("No disponible");
-      setInputColor("#f87171");
+      setInputStart("08:00"); setInputFinish("09:00"); setInputSummary("No disponible"); setInputColor("#f87171");
       setEditingIndex(null);
     }
     setOverlayVisible(true);
   };
 
-  const saveBlock = () => {
+  const saveBlock = async () => {
     if (!inputDay || !inputStart || !inputFinish || !inputSummary) return alert("Faltan datos");
 
     const newBlock: Block = {
@@ -151,13 +138,13 @@ export default function Schedule() {
     const method = editingIndex !== null && newBlock.googleId ? "PUT" : "POST";
     const url = method === "POST" ? `${API_BASE}/calendar` : `${API_BASE}/calendar/${newBlock.googleId}`;
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newBlock),
-    })
-    .then(res => res.json())
-    .then(data => {
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBlock),
+      });
+      const data = await res.json();
       if (method === "POST" && data?.data?.id) {
         const createdId = data.data.id;
         setBlocks(prev => prev.map(b =>
@@ -166,8 +153,7 @@ export default function Schedule() {
             : b
         ));
       }
-    })
-    .catch(err => console.error("saveBlock error:", err));
+    } catch (err) { console.error("saveBlock error:", err); }
   };
 
   const deleteBlock = (index: number) => {
@@ -186,7 +172,6 @@ export default function Schedule() {
     } catch (err) { console.error(err); alert("Error sincronizando calendario"); }
   };
 
-  // --- Semana inicial y final para mostrar en la cabecera
   const startOfWeek = new Date(currentDate);
   startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
   const endOfWeek = new Date(startOfWeek);
@@ -229,7 +214,6 @@ export default function Schedule() {
               <CalendarGridWeek blocks={blocks} currentDate={currentDate} onEdit={showForm} onDelete={deleteBlock} />
             ) : (
               <CalendarGridMonth blocks={blocks} currentDate={currentDate} />
-
             )}
           </div>
           <p className="schedule__hint">Cada bloque representa un horario donde no estás disponible.</p>

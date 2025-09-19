@@ -9,18 +9,20 @@ const PORT = process.env.PORT || 3000;
 
 // -------------------- CORS --------------------
 const FRONTEND_URL = process.env.NODE_ENV === "production"
-  ? "https://meetsync106.onrender.com" // tu frontend en Render
-  : "http://localhost:5173";           // puerto de Vite
+  ? "https://meetsync106.onrender.com" // frontend en Render
+  : "http://localhost:5173";           // puerto de Vite local
 
 app.use(cors({
   origin: FRONTEND_URL,
   credentials: true, // si necesitás cookies/autenticación
 }));
 
+app.use(express.json());
+
 // -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
-  ? `${process.env.BACKEND_URL}/auth/google/callback`
-  : `http://localhost:${PORT}/auth/google/callback`;
+  ? `${process.env.BACKEND_URL}/auth/google/callback` // backend Render
+  : `http://localhost:${PORT}/auth/google/callback`;  // local
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
