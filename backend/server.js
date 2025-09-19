@@ -8,8 +8,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // -------------------- CORS --------------------
-import cors from "cors";
-
 const FRONTEND_URL = process.env.NODE_ENV === "production"
   ? "https://meetsync106.onrender.com" // tu frontend en Render
   : "http://localhost:5173";           // puerto de Vite
