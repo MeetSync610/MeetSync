@@ -10,23 +10,33 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// OAuth2 Google
+const redirectUri = process.env.NODE_ENV === "production"
+  ? `${process.env.BACKEND_URL}/auth/google/callback` // Render
+  : `http://localhost:3000/auth/google/callback`;      // Local
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000/auth/google/callback"
+  redirectUri
 );
+
+
 
 // -------------------- RUTAS --------------------
 
 // Generar URL de login
 app.get("/auth/google/url", (req, res) => {
-  const url = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/calendar.events"],
-    prompt: "consent",
-  });
-  res.json({ url });
+  try {
+    const url = oauth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: ["https://www.googleapis.com/auth/calendar.events"],
+      prompt: "consent",
+    });
+    res.json({ url });
+  } catch (err) {
+    console.error("Error generando URL de Google:", err);
+    res.status(500).json({ success: false, message: "No se pudo generar la URL de Google" });
+  }
 });
 
 // Callback de Google
@@ -37,13 +47,12 @@ app.get("/auth/google/callback", async (req, res) => {
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    res.redirect("http://localhost:5173/?success=true");
+    res.redirect(`${process.env.FRONTEND_URL}/?success=true`);
   } catch (err) {
-    console.error(err);
+    console.error("Error en callback de Google:", err);
     res.status(500).send("Error autenticando con Google");
   }
 });
-
 
 // Crear evento
 app.post("/api/calendar", async (req, res) => {
@@ -59,14 +68,10 @@ app.post("/api/calendar", async (req, res) => {
       end: { dateTime: `${day}T${finish}:00`, timeZone: "America/Argentina/Buenos_Aires" },
     };
 
-    const response = await calendar.events.insert({
-      calendarId: "primary",
-      requestBody: event,
-    });
-
+    const response = await calendar.events.insert({ calendarId: "primary", requestBody: event });
     res.json({ success: true, data: response.data });
   } catch (err) {
-    console.error(err);
+    console.error("Error creando evento:", err);
     res.status(500).json({ success: false, message: "Error creando evento" });
   }
 });
@@ -81,19 +86,22 @@ app.get("/api/calendar/events", async (req, res) => {
       maxResults: 100,
       singleEvents: true,
       orderBy: "startTime",
+      timeZone: "America/Argentina/Buenos_Aires", // 👈 importante
     });
     res.json({ success: true, events: response.data.items });
   } catch (err) {
-    console.error(err);
+    console.error("Error obteniendo eventos:", err);
     res.status(500).json({ success: false, message: "Error obteniendo eventos" });
   }
 });
+
 
 // Editar evento
 app.put("/api/calendar/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { day, start, finish, summary } = req.body;
+
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
     const response = await calendar.events.update({
       calendarId: "primary",
@@ -106,7 +114,7 @@ app.put("/api/calendar/:id", async (req, res) => {
     });
     res.json({ success: true, data: response.data });
   } catch (err) {
-    console.error(err);
+    console.error("Error actualizando evento:", err);
     res.status(500).json({ success: false, message: "Error actualizando evento" });
   }
 });
@@ -119,7 +127,7 @@ app.delete("/api/calendar/:id", async (req, res) => {
     await calendar.events.delete({ calendarId: "primary", eventId: id });
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Error eliminando evento:", err);
     res.status(500).json({ success: false, message: "Error eliminando evento" });
   }
 });

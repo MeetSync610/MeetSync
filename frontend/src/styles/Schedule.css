@@ -47,3 +47,82 @@
   padding: 2rem;
   text-align: center;
 }
+
+
+/* Overlay general */
+.overlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  background: rgba(51,65,85,0.4); /* semi-transparente para destacar el modal */
+  display: flex; /* se activa al mostrar */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Contenedor del formulario */
+.setBlock {
+  background: var(--bg);
+  border-radius: 1rem;
+  padding: 2rem;
+  min-width: 280px;
+  max-width: 380px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+/* Labels */
+.setBlock label {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* Inputs */
+.setBlock input[type="text"],
+.setBlock input[type="date"],
+.setBlock input[type="time"],
+.setBlock input[type="color"] {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+/* Inputs de color más compactos */
+.setBlock input[type="color"] {
+  padding: 0;
+  height: 2rem;
+}
+
+/* Botones del modal */
+.setBlock button {
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.7rem;
+  border: 1px solid #334155;
+  background: transparent;
+  color: var(--text);
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.setBlock button:hover {
+  background: #334155;
+  color: #fff;
+}
+
+/* Botón aceptar y cancelar separados */
+.setBlock button:first-of-type {
+  margin-right: 0.5rem;
+}

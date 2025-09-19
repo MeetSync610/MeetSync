@@ -1,40 +1,39 @@
 import "../styles/CalendarGrid.css";
 import type { Block } from "../types";
-import { Edit2, Trash2 } from "lucide-react";
 
-type Props = { blocks?: Block[], onEdit?: (i:number)=>void, onDelete?: (i:number)=>void };
-const DAYS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+type Props = {
+  blocks?: Block[];
+  currentDate: Date;
+  onEdit?: (i:number)=>void;
+  onDelete?: (i:number)=>void;
+};
 
-export default function CalendarGridMonth({ blocks=[], onEdit, onDelete }: Props) {
-  const d = new Date();
-  const month = d.getMonth();
-  const year = d.getFullYear();
-  const lastDay = new Date(year, month + 1, 0).getDate();
-  const firstWeekday = new Date(year, month, 1).getDay();
-  const emptyCells = Array.from({ length: firstWeekday }, () => null);
+export default function CalendarGridMonth({ blocks=[], currentDate, onEdit, onDelete }: Props) {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const today = new Date();
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  const totalDays = lastDay.getDate();
+  const days = Array.from({ length: totalDays }, (_, i) => i + 1);
 
   return (
     <div className="calendar-month">
-      {DAYS.map(d => <div key={d} className="calendar__day">{d}</div>)}
-      {emptyCells.map((_, i) => <div key={`empty-${i}`} className="calendar__day empty"></div>)}
-      {Array.from({ length: lastDay }, (_, i) => {
-        const dayNum = i + 1;
-        const dateStr = `${year}-${(month+1).toString().padStart(2,"0")}-${dayNum.toString().padStart(2,"0")}`;
-        const blockHereIndex = blocks.findIndex(b => b.day === dateStr);
-        const blockHere = blockHereIndex !== -1 ? blocks[blockHereIndex] : null;
+      {days.map(day => {
+        const dateStr = `${year}-${(month+1).toString().padStart(2,"0")}-${day.toString().padStart(2,"0")}`;
+        const blocksOfDay = blocks.filter(b => b.day === dateStr);
+        const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
 
         return (
-          <div key={dayNum} className={`calendar__day ${blockHere ? "occupied" : ""}`} style={{backgroundColor: blockHere?.color || undefined, position:"relative"}}>
-            {dayNum}
-            {blockHere && (
-              <>
-                <div className="block-label">{blockHere.summary}</div>
-                <div style={{position:"absolute", top:"2px", right:"2px", display:"flex", gap:"2px"}}>
-                  <button onClick={() => onEdit?.(blockHereIndex)} style={{background:"none", border:"none"}}><Edit2 size={14}/></button>
-                  <button onClick={() => onDelete?.(blockHereIndex)} style={{background:"none", border:"none"}}><Trash2 size={14}/></button>
-                </div>
-              </>
-            )}
+          <div key={day} className={`calendar__cell ${isToday ? "today" : ""}`} style={{position:"relative"}}>
+            <div className="calendar__day-number">{day}</div>
+            {blocksOfDay.map((b,i) => (
+              <div key={i} style={{backgroundColor:b.color, margin:"2px", padding:"2px", borderRadius:"2px"}}>
+                {b.summary}
+              </div>
+            ))}
           </div>
         );
       })}
