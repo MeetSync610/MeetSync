@@ -228,7 +228,8 @@ export default function Schedule() {
             {view ? (
               <CalendarGridWeek blocks={blocks} currentDate={currentDate} onEdit={showForm} onDelete={deleteBlock} />
             ) : (
-              <CalendarGridMonth blocks={blocks} currentDate={currentDate} onEdit={showForm} onDelete={deleteBlock} />
+              <CalendarGridMonth blocks={blocks} currentDate={currentDate} />
+
             )}
           </div>
           <p className="schedule__hint">Cada bloque representa un horario donde no estás disponible.</p>

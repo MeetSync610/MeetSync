@@ -4,18 +4,14 @@ import type { Block } from "../types";
 type Props = {
   blocks?: Block[];
   currentDate: Date;
-  onEdit?: (i:number)=>void;
-  onDelete?: (i:number)=>void;
 };
 
-export default function CalendarGridMonth({ blocks=[], currentDate, onEdit, onDelete }: Props) {
+export default function CalendarGridMonth({ blocks=[], currentDate }: Props) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const today = new Date();
 
-  const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-
   const totalDays = lastDay.getDate();
   const days = Array.from({ length: totalDays }, (_, i) => i + 1);
 
