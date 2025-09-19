@@ -8,12 +8,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // -------------------- CORS --------------------
-const FRONTEND_URL = process.env.NODE_ENV === "production"
-  ? process.env.FRONTEND_URL
-  : "http://localhost:5173"; // cambiar según tu puerto de Vite
+import cors from "cors";
 
-app.use(cors({ origin: FRONTEND_URL }));
-app.use(express.json());
+const FRONTEND_URL = process.env.NODE_ENV === "production"
+  ? "https://meetsync106.onrender.com" // tu frontend en Render
+  : "http://localhost:5173";           // puerto de Vite
+
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true, // si necesitás cookies/autenticación
+}));
 
 // -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
