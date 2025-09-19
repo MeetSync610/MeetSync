@@ -7,12 +7,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// -------------------- CORS --------------------
+const FRONTEND_URL = process.env.NODE_ENV === "production"
+  ? process.env.FRONTEND_URL
+  : "http://localhost:5173"; // cambiar según tu puerto de Vite
+
+app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 
+// -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
-  ? `${process.env.BACKEND_URL}/auth/google/callback` // Render
-  : `http://localhost:3000/auth/google/callback`;      // Local
+  ? `${process.env.BACKEND_URL}/auth/google/callback`
+  : `http://localhost:${PORT}/auth/google/callback`;
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -20,11 +26,9 @@ const oauth2Client = new google.auth.OAuth2(
   redirectUri
 );
 
-
-
 // -------------------- RUTAS --------------------
 
-// Generar URL de login
+// URL de login
 app.get("/auth/google/url", (req, res) => {
   try {
     const url = oauth2Client.generateAuthUrl({
@@ -47,7 +51,7 @@ app.get("/auth/google/callback", async (req, res) => {
   try {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    res.redirect(`${process.env.FRONTEND_URL}/?success=true`);
+    res.redirect(`${FRONTEND_URL}/?success=true`);
   } catch (err) {
     console.error("Error en callback de Google:", err);
     res.status(500).send("Error autenticando con Google");
@@ -86,7 +90,7 @@ app.get("/api/calendar/events", async (req, res) => {
       maxResults: 100,
       singleEvents: true,
       orderBy: "startTime",
-      timeZone: "America/Argentina/Buenos_Aires", // 👈 importante
+      timeZone: "America/Argentina/Buenos_Aires",
     });
     res.json({ success: true, events: response.data.items });
   } catch (err) {
@@ -94,7 +98,6 @@ app.get("/api/calendar/events", async (req, res) => {
     res.status(500).json({ success: false, message: "Error obteniendo eventos" });
   }
 });
-
 
 // Editar evento
 app.put("/api/calendar/:id", async (req, res) => {
