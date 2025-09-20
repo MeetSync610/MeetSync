@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { google } from "googleapis";
+import session from "express-session";
 
 dotenv.config();
 const app = express();
@@ -10,19 +11,27 @@ const PORT = process.env.PORT || 3000;
 // -------------------- CORS --------------------
 const FRONTEND_URL = process.env.NODE_ENV === "production"
   ? "https://meetsync106.onrender.com" // frontend en Render
-  : "http://localhost:5173";           // puerto de Vite local
+  : "http://localhost:5173";           // Vite local
 
 app.use(cors({
   origin: FRONTEND_URL,
-  credentials: true, // si necesitás cookies/autenticación
+  credentials: true,
 }));
 
 app.use(express.json());
 
+// -------------------- SESIÓN --------------------
+app.use(session({
+  secret: process.env.SESSION_SECRET || "supersecreto", // poné algo más seguro en Render
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === "production" },
+}));
+
 // -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
-  ? `${process.env.BACKEND_URL}/auth/google/callback` // backend Render
-  : `http://localhost:${PORT}/auth/google/callback`;  // local
+  ? `${process.env.BACKEND_URL}/auth/google/callback`
+  : `http://localhost:${PORT}/auth/google/callback`;
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
@@ -37,8 +46,8 @@ app.get("/auth/google/url", (req, res) => {
   try {
     const url = oauth2Client.generateAuthUrl({
       access_type: "offline",
+      prompt: "consent", // fuerza refresh_token
       scope: ["https://www.googleapis.com/auth/calendar.events"],
-      prompt: "consent",
     });
     res.json({ url });
   } catch (err) {
@@ -54,7 +63,15 @@ app.get("/auth/google/callback", async (req, res) => {
 
   try {
     const { tokens } = await oauth2Client.getToken(code);
+
+    // Guardar tokens en sesión
+    req.session.tokens = tokens;
+
+    // Setear credenciales actuales
     oauth2Client.setCredentials(tokens);
+
+    console.log("TOKENS:", tokens); // para debug
+
     res.redirect(`${FRONTEND_URL}/?success=true`);
   } catch (err) {
     console.error("Error en callback de Google:", err);
@@ -62,8 +79,17 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 });
 
+// Middleware para asegurarse de que haya tokens
+function requireAuth(req, res, next) {
+  if (!req.session.tokens) {
+    return res.status(401).json({ success: false, message: "Usuario no autenticado con Google" });
+  }
+  oauth2Client.setCredentials(req.session.tokens);
+  next();
+}
+
 // Crear evento
-app.post("/api/calendar", async (req, res) => {
+app.post("/api/calendar", requireAuth, async (req, res) => {
   try {
     const { day, start, finish, summary } = req.body;
     if (!day || !start || !finish || !summary)
@@ -85,7 +111,7 @@ app.post("/api/calendar", async (req, res) => {
 });
 
 // Obtener eventos
-app.get("/api/calendar/events", async (req, res) => {
+app.get("/api/calendar/events", requireAuth, async (req, res) => {
   try {
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
     const response = await calendar.events.list({
@@ -104,7 +130,7 @@ app.get("/api/calendar/events", async (req, res) => {
 });
 
 // Editar evento
-app.put("/api/calendar/:id", async (req, res) => {
+app.put("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { day, start, finish, summary } = req.body;
@@ -127,7 +153,7 @@ app.put("/api/calendar/:id", async (req, res) => {
 });
 
 // Borrar evento
-app.delete("/api/calendar/:id", async (req, res) => {
+app.delete("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
