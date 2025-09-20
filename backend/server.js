@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3000;
 
 // -------------------- CORS --------------------
 const FRONTEND_URL = process.env.NODE_ENV === "production"
-  ? "https://meetsync106.onrender.com"
-  : "http://localhost:5173";
+  ? "https://meetsync106.onrender.com" // frontend en Render
+  : "http://localhost:5173";           // Vite local
 
 app.use(cors({
   origin: FRONTEND_URL,
@@ -22,13 +22,13 @@ app.use(express.json());
 
 // -------------------- SESIÓN --------------------
 app.use(session({
-  secret: process.env.SESSION_SECRET || "supersecreto",
+  secret: process.env.SESSION_SECRET || "supersecreto", // poné algo más seguro en Render
   resave: false,
   saveUninitialized: false,
   cookie: { secure: process.env.NODE_ENV === "production" },
 }));
 
-// -------------------- OAUTH GOOGLE --------------------
+// -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
   ? `${process.env.BACKEND_URL}/auth/google/callback`
   : `http://localhost:${PORT}/auth/google/callback`;
@@ -39,11 +39,6 @@ const oauth2Client = new google.auth.OAuth2(
   redirectUri
 );
 
-// Si tenemos refresh_token en env, lo seteamos
-if (process.env.GOOGLE_REFRESH_TOKEN) {
-  oauth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
-}
-
 // -------------------- RUTAS --------------------
 
 // URL de login
@@ -51,7 +46,7 @@ app.get("/auth/google/url", (req, res) => {
   try {
     const url = oauth2Client.generateAuthUrl({
       access_type: "offline",
-      prompt: "consent",
+      prompt: "consent", // fuerza refresh_token
       scope: ["https://www.googleapis.com/auth/calendar.events"],
     });
     res.json({ url });
@@ -75,7 +70,7 @@ app.get("/auth/google/callback", async (req, res) => {
     // Setear credenciales actuales
     oauth2Client.setCredentials(tokens);
 
-    console.log("TOKENS:", tokens);
+    console.log("TOKENS:", tokens); // para debug
 
     res.redirect(`${FRONTEND_URL}/?success=true`);
   } catch (err) {
@@ -84,30 +79,17 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 });
 
-// -------------------- MIDDLEWARE --------------------
-// Refresca access_token automáticamente
-async function ensureAuth(req, res, next) {
-  try {
-    // Si hay tokens en sesión, úsalos
-    if (req.session.tokens) {
-      oauth2Client.setCredentials(req.session.tokens);
-    }
-
-    // Si hay refresh_token en env, generá access_token
-    const tokenResponse = await oauth2Client.getAccessToken();
-    oauth2Client.setCredentials({ access_token: tokenResponse.token });
-
-    next();
-  } catch (err) {
-    console.error("Error refrescando token:", err);
-    res.status(401).json({ success: false, message: "No autenticado con Google" });
+// Middleware para asegurarse de que haya tokens
+function requireAuth(req, res, next) {
+  if (!req.session.tokens) {
+    return res.status(401).json({ success: false, message: "Usuario no autenticado con Google" });
   }
+  oauth2Client.setCredentials(req.session.tokens);
+  next();
 }
 
-// -------------------- RUTAS DE CALENDAR --------------------
-
 // Crear evento
-app.post("/api/calendar", ensureAuth, async (req, res) => {
+app.post("/api/calendar", requireAuth, async (req, res) => {
   try {
     const { day, start, finish, summary } = req.body;
     if (!day || !start || !finish || !summary)
@@ -129,7 +111,7 @@ app.post("/api/calendar", ensureAuth, async (req, res) => {
 });
 
 // Obtener eventos
-app.get("/api/calendar/events", ensureAuth, async (req, res) => {
+app.get("/api/calendar/events", requireAuth, async (req, res) => {
   try {
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
     const response = await calendar.events.list({
@@ -148,7 +130,7 @@ app.get("/api/calendar/events", ensureAuth, async (req, res) => {
 });
 
 // Editar evento
-app.put("/api/calendar/:id", ensureAuth, async (req, res) => {
+app.put("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { day, start, finish, summary } = req.body;
@@ -171,7 +153,7 @@ app.put("/api/calendar/:id", ensureAuth, async (req, res) => {
 });
 
 // Borrar evento
-app.delete("/api/calendar/:id", ensureAuth, async (req, res) => {
+app.delete("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
@@ -183,7 +165,7 @@ app.delete("/api/calendar/:id", ensureAuth, async (req, res) => {
   }
 });
 
-// -------------------- TEST --------------------
+// Ruta de prueba
 app.get("/", (req, res) => res.send("Backend funcionando correctamente"));
 
 // -------------------- LISTEN --------------------
