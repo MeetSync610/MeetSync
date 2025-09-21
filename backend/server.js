@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import session from "express-session";
+import friendsRouter from "./routes/friends.cjs";
 
 dotenv.config();
 const app = express();
@@ -40,6 +41,9 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 // -------------------- RUTAS --------------------
+
+// Amigos
+app.use('/api', friendsRouter);
 
 // URL de login
 app.get("/auth/google/url", (req, res) => {

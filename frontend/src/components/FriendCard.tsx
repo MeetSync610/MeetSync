@@ -3,11 +3,13 @@ import { UserCheck, UserPlus } from "lucide-react";
 
 type FriendCardProps = {
   name: string;
-  subtitle: "Amigo" | "Sugerido";
-  type: "friend" | "suggested";
+  isFriend: boolean;
 };
 
-export default function FriendCard({ name, subtitle, type }: FriendCardProps) {
+export default function FriendCard({ name, isFriend }: FriendCardProps) {
+
+  let subtitle = isFriend? "Amigo" : "Sugerido";
+
   return (
     <div className="fcard">
       <div className="fcard__left">
@@ -19,7 +21,7 @@ export default function FriendCard({ name, subtitle, type }: FriendCardProps) {
       </div>
 
       <div className="fcard__right">
-        {type === "friend" ? (
+        {isFriend? (
           <span className="badge"><UserCheck/></span>
         ) : (
           <button className="btn-ghost"><UserPlus/></button>
