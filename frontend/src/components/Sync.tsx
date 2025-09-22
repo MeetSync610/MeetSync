@@ -1,12 +1,22 @@
+import { useState, useEffect } from "react";
 import "../styles/Sync.css";
 import { Link } from "react-router-dom";
 import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
 import SectionCard from "./SectionCard";
 import PersonPickItem from "./PersonPickItem";
-
-const MOCK_FRIENDS = ["Billy", "Mati", "Leo"];
+import type { user } from "./Friends";
 
 export default function Sync() {
+
+  const [friends, setFriends] = useState([]);
+
+  useEffect( () => {
+    fetch(`http://localhost:3000/api/friends`)
+     .then((res) => res.json())
+     .then((data) => setFriends(data))
+     .catch((err) => console.error("Error al traer amigos:", err));
+  }, [])
+
   return (
     <section className="sync">
       <div className="container">
@@ -20,8 +30,8 @@ export default function Sync() {
               description="Elegí un amigo para cruzar horarios."
             >
               <div className="sync__list">
-                {MOCK_FRIENDS.map((n) => (
-                  <PersonPickItem key={n} name={n} mode="radio" group="peer" />
+                {friends && friends.map((frn: user, i) => (
+                  <PersonPickItem key={i} name={frn.name} mode="radio" group="peer" />
                 ))}
               </div>
               <button className="btn-primary sync__btn">
@@ -35,8 +45,8 @@ export default function Sync() {
               description="Armá un grupo y cruzá horarios de todos."
             >
               <div className="sync__list">
-                {MOCK_FRIENDS.map((n) => (
-                  <PersonPickItem key={n} name={n} mode="checkbox" />
+                {friends && friends.map((frn: user, i) => (
+                  <PersonPickItem key={-i} name={frn.name} mode="checkbox" />
                 ))}
               </div>
 

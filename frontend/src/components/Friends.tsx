@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 import FriendCard from "./FriendCard";
 // import { UserCheck, UserPlus } from "lucide-react";
 
-type user = {
+export type user = {
   name: string,
   username: string,
   isFriend: boolean,
@@ -20,9 +20,8 @@ export default function Friends() {
   useEffect( () => {
     fetch(`http://localhost:3000/api/friends`)
      .then((res) => res.json())
-     .then((data) => {setFriends(data); console.log(data);})
+     .then((data) => setFriends(data))
      .catch((err) => console.error("Error al traer amigos:", err));
-     
   }, [])
 
   const handleSearch = async (user: string) => {
