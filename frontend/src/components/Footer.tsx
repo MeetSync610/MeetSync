@@ -11,10 +11,10 @@ export default function Footer() {
           <div className="footer__copy">© 2025 MeetSync ·</div>
         </div>
         <div className="footer__links">
-          <a href="https://instagram.com/tu_usuario" target="_blank" rel="noopener noreferrer">Instagram</a>
-          <a href="https://x.com/tu_usuario" target="_blank" rel="noopener noreferrer">X</a>
-          <a href="https://discord.gg/tu_invite" target="_blank" rel="noopener noreferrer">Discord</a>
-          <a href="mailto:tu@mail.com">Mail</a>
+          <a href="https://instagram.com/leomessi" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://x.com/leomessisite" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://discord.gg/" target="_blank" rel="noopener noreferrer">Discord</a>
+          <a href="mailto:meetsync25@gmail.com">Mail</a>
         </div>
         <div className="footer__legal">
           <Link to="/terminos">Términos de servicio </Link>

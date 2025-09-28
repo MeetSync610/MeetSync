@@ -14,7 +14,7 @@ import Sync from "./components/Sync";
 // import Faq from "./components/Faq";
 import Terms from "./components/Terms";
 import Privacy from "./components/Privacy";
-// import Support from "./components/Support";
+import Support from "./components/Support";
 import LandingLayout from "./components/LandingLayout";
 import HomeLanding from "./components/HomeLanding";
 
@@ -41,6 +41,7 @@ export default function App() {
 
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} /> 
+          <Route path="/soporte" element={<Support/> } />
           <Route path="/register" element={<Register />} />
         </Route>
       </Routes>

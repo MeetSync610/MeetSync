@@ -8,6 +8,7 @@ export default function SupportButton() {
       <Link to="/soporte" id="support_button">
         <BotMessageSquare className="icon-sky transform -scale-x-100" size={60}/>
       </Link>
+      
     </>  
   )
 }
