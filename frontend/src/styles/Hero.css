@@ -72,3 +72,21 @@
     column-gap: 6rem;
   }
 }
+/* Asegurate de que hero__image sirva también para el contenedor del carrusel */
+.hero__image {
+  width: 100%;
+  max-width: 34rem;
+  border-radius: 24px;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  overflow: hidden; /* recorta bordes cuando hay carrusel */
+}
+
+/* (ya los tenías) tamaños para monitores grandes */
+@media (min-width: 1400px) and (min-height: 800px) {
+  .hero__image { max-width: 42rem; }
+}
+@media (min-width: 1800px) and (min-height: 900px) {
+  .hero__image { max-width: 46rem; }
+}
+.hero__image { overflow: hidden; }
