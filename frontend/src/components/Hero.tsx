@@ -51,7 +51,7 @@ export default function Hero() {
 
         <div className="hero__right">
           {/* misma “skin” que tu imagen previa */}
-          <Carousel className="hero__image" images={images} autoPlay={false} loop />
+          <Carousel className="hero__image" images={images} autoPlay={true} intervalMs={4000} loop />
           <div className="hero__blob" aria-hidden />
         </div>
       </div>
