@@ -13,27 +13,23 @@ type Props = {
 export default function Carousel({
   images,
   className = "",
-  autoPlay = false,
-  intervalMs = 5000,
+  autoPlay = true,       
+  intervalMs = 5000,   
   loop = true,
 }: Props) {
   const n = images.length;
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
 
-  // drag / swipe
   const [dragPx, setDragPx] = useState(0);
   const [dragging, setDragging] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const widthRef = useRef(1);
 
-  const clamp = (i: number) =>
-    loop ? (i + n) % n : Math.max(0, Math.min(n - 1, i));
+  const clamp = (i: number) => (loop ? (i + n) % n : Math.max(0, Math.min(n - 1, i)));
+  const prev = () => setIndex(i => clamp(i - 1));
+  const next = () => setIndex(i => clamp(i + 1));
 
-  const prev = () => setIndex((i) => clamp(i - 1));
-  const next = () => setIndex((i) => clamp(i + 1));
-
-  // autoplay con pausa en hover/drag
   useEffect(() => {
     if (!autoPlay || n <= 1) return;
     const id = setInterval(() => {
@@ -42,7 +38,6 @@ export default function Carousel({
     return () => clearInterval(id);
   }, [autoPlay, intervalMs, hover, dragging, n]);
 
-  // teclado
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
@@ -52,7 +47,6 @@ export default function Carousel({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // swipe
   const onPointerDown = (e: React.PointerEvent) => {
     if (!wrapRef.current) return;
     wrapRef.current.setPointerCapture(e.pointerId);
@@ -76,7 +70,6 @@ export default function Carousel({
   };
 
   if (!n) return null;
-
   const dragPct = (dragPx / widthRef.current) * 100;
 
   return (
@@ -114,7 +107,6 @@ export default function Carousel({
         </div>
       </div>
 
-      {/* Flechas (afuera, visibles solo en hover en desktop) */}
       {n > 1 && (
         <>
           <button
