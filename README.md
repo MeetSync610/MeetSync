@@ -1,16 +1,16 @@
-<h1 align="center">MeetSync</h1>
+<h1 align="center">- MeetSync -</h1>
 
 <p align="center">
   <em>Sincronizá horarios con tus amigos. Menos chat eterno, más juntadas reales.</em>
 </p>
 
 <p align="center">
-  <img src="/frontend/public/logo.png" alt="MeetSync" width="96" style="border-radius:12px" />
+  <img src="/frontend/public/logo.png" alt="MeetSync" width="500" style="border-radius:12px" />
 </p>
 
 <p align="center">
-  <a href="https://github.com/tu-usuario/MeetSync/issues">Reportar un bug</a> ·
-  <a href="https://github.com/tu-usuario/MeetSync/discussions">Sugerir una idea</a>
+  <a href="https://meetsync106.onrender.com/">Pagina hosteada</a> ·
+  <a href="mailto:meetsync25@gmail.com">Mail de contacto</a>
 </p>
 
 ---
