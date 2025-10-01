@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="public/logo.png" alt="MeetSync" width="96" style="border-radius:12px" />
+  <img src="/frontend/public/logo.png" alt="MeetSync" width="96" style="border-radius:12px" />
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@ Los usuarios marcan su disponibilidad semanal, conectan con amigos y (en futuras
 - **Schedule** (maqueta de calendario semanal).
 - **Sync** (UI para crear sincronización 1 a 1 o grupal).
 - **Nav responsive** con **menú hamburguesa** y overlay en mobile.
-- **Dark UI** minimalista, sin Tailwind (CSS modular por componente).
+- **Dark UI** minimalista, (CSS modular por componente).
 
 > Roadmap: disponibilidad real, cruces automáticos, recordatorios, lugares sugeridos, mapa de punto de encuentro, notificaciones.
 
@@ -43,7 +43,7 @@ Los usuarios marcan su disponibilidad semanal, conectan con amigos y (en futuras
 ## 🧱 Stack
 
 - **Frontend:** React 18, Vite, TypeScript, React Router
-- **Estilos:** CSS modular (sin Tailwind).  
+- **Estilos:** CSS modular.  
 - **Íconos:** lucide-react
 - **Control de versiones:** Git/GitHub
 
