@@ -18,7 +18,7 @@ export default function Friends() {
   const [searching, setSearching] = useState(false);
 
   useEffect( () => {
-    fetch(`http://localhost:3000/api/friends`)
+    fetch(`http://localhost:3000/api/friends/1`)
      .then((res) => res.json())
      .then((data) => setFriends(data))
      .catch((err) => console.error("Error al traer amigos:", err));
@@ -29,7 +29,7 @@ export default function Friends() {
       setSearch([]);
       setSearching(false);
     } else try {
-      const responde = await fetch(`http://localhost:3000/api/friends/${user}`);
+      const responde = await fetch(`http://localhost:3000/api/friends?name=${user}`);
       if(!responde.ok) {
         throw new Error("Persona no Encontrada");
       }
@@ -58,7 +58,7 @@ export default function Friends() {
         
         <div className="friends__list">
           {searching && search.map((res: user, i) => (<FriendCard key={i} name={res.name} isFriend={res.isFriend} />))}
-          {!searching && friends.map((frn: user, i) => (<FriendCard key={i} name={frn.name} isFriend={true} />))}
+          {/* !searching && friends.map((frn: user, i) => (<FriendCard key={i} name={frn.name} isFriend={true} />)) */}
         </div>
       </div>
     </section>
