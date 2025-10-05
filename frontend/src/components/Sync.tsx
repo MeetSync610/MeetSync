@@ -4,18 +4,22 @@ import { Link } from "react-router-dom";
 import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
 import SectionCard from "./SectionCard";
 import PersonPickItem from "./PersonPickItem";
-import type { user } from "./Friends";
+
+type User = {
+  id: number;
+  name: string;
+};
 
 export default function Sync() {
+  // Tipamos el estado como User[]
+  const [friends, setFriends] = useState<User[]>([]);
 
-  const [friends, setFriends] = useState([]);
-
-  useEffect( () => {
+  useEffect(() => {
     fetch(`http://localhost:3000/api/friends`)
-     .then((res) => res.json())
-     .then((data) => setFriends(data))
-     .catch((err) => console.error("Error al traer amigos:", err));
-  }, [])
+      .then((res) => res.json())
+      .then((data: User[]) => setFriends(data))
+      .catch((err) => console.error("Error al traer amigos:", err));
+  }, []);
 
   return (
     <section className="sync">
@@ -30,8 +34,13 @@ export default function Sync() {
               description="Elegí un amigo para cruzar horarios."
             >
               <div className="sync__list">
-                {friends && friends.map((frn: user, i) => (
-                  <PersonPickItem key={i} name={frn.name} mode="radio" group="peer" />
+                {friends.map((frn, i) => (
+                  <PersonPickItem
+                    key={i}
+                    name={frn.name}
+                    mode="radio"
+                    group="peer"
+                  />
                 ))}
               </div>
               <button className="btn-primary sync__btn">
@@ -45,8 +54,8 @@ export default function Sync() {
               description="Armá un grupo y cruzá horarios de todos."
             >
               <div className="sync__list">
-                {friends && friends.map((frn: user, i) => (
-                  <PersonPickItem key={-i} name={frn.name} mode="checkbox" />
+                {friends.map((frn, i) => (
+                  <PersonPickItem key={i} name={frn.name} mode="checkbox" />
                 ))}
               </div>
 

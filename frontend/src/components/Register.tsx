@@ -53,7 +53,7 @@ export default function Register() {
   if (!canSubmit) return;
 
   try {
-    const { data, error } = await supabase.auth.signUp({
+    const {error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
     });

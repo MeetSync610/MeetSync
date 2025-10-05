@@ -16,7 +16,7 @@ export default function Friends() {
     sendFriendRequest, 
     acceptFriendRequest, 
     rejectFriendRequest, 
-    removeFriend,
+    // removeFriend,
     loadFriends,               
     loadPendingFriendRequests  
   } = useAuthContext();

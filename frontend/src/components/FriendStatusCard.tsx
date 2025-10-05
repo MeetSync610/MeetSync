@@ -1,5 +1,5 @@
 import "../styles/FriendStatusCard.css";
-import { useAuthContext } from "../contexts/AuthContext";
+//import { useAuthContext } from "../contexts/AuthContext";
 
 type Props = {
   id: string;
@@ -11,7 +11,7 @@ type Props = {
   rejectHandler?: () => void;
 };
 
-export default function FriendStatusCard({ id, name, status, removable, removeHandler, acceptHandler, rejectHandler }: Props) {
+export default function FriendStatusCard({name, status, removable, removeHandler, acceptHandler, rejectHandler }: Props) {
   return (
     <div className="fstatus">
       <div className="fstatus__left">
