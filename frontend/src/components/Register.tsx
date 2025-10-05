@@ -1,35 +1,34 @@
 import "../styles/Register.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserPlus } from "lucide-react";
 import AuthCard from "./AuthCard";
 import FormField from "./FormField";
 import { useMemo, useState } from "react";
+import { supabase } from "../supabaseClient";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
-  const [username, setUsername] = useState(""); // nuevo
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  // Reglas
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
 
-  // Validaciones derivadas
   const usernameError = useMemo(() => {
     if (!username) return undefined;
-    if (!usernameRegex.test(username)) {
+    if (!usernameRegex.test(username))
       return "Usá 3–20 caracteres: letras, números o _ (guión bajo).";
-    }
     return undefined;
   }, [username]);
 
   const passwordError = useMemo(() => {
     if (!password) return undefined;
-    if (!passRegex.test(password)) {
+    if (!passRegex.test(password))
       return "Mínimo 6 caracteres, al menos una letra y un número.";
-    }
     return undefined;
   }, [password]);
 
@@ -42,17 +41,50 @@ export default function Register() {
   const canSubmit =
     name.trim().length > 0 &&
     email.trim().length > 0 &&
-    username && !usernameError &&
-    password && !passwordError &&
-    confirm && !confirmError;
+    username &&
+    !usernameError &&
+    password &&
+    !passwordError &&
+    confirm &&
+    !confirmError;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-    // mock: acá iría el POST al backend
-    // ej: apiPost("/auth/register", { name, username, email, password })
-    alert(`Registro ok (mock): ${name} / @${username} / ${email}`);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!canSubmit) return;
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    if (error) {
+      console.error("Supabase signup error:", error);
+      alert("Error al registrarse: " + error.message);
+      return;
+    }
+
+    // Iniciar sesión automáticamente
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    if (loginError) {
+      alert("Error al iniciar sesión: " + loginError.message);
+      return;
+    }
+
+    alert("✅ Registro exitoso! Ahora podés iniciar sesión.");
+    navigate("/login");
+
+  } catch (err) {
+    console.error(err);
+    alert("Ocurrió un error inesperado");
+  }
+};
+
+
 
   return (
     <section className="register">
@@ -61,7 +93,9 @@ export default function Register() {
         footer={
           <span>
             ¿Ya tenés cuenta?{" "}
-            <Link to="/login" className="link">Entrar</Link>
+            <Link to="/login" className="link">
+              Entrar
+            </Link>
           </span>
         }
       >
@@ -75,7 +109,6 @@ export default function Register() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-
           <FormField
             id="username"
             label="Nombre de usuario"
@@ -86,7 +119,6 @@ export default function Register() {
             onChange={(e) => setUsername(e.target.value)}
             error={usernameError}
           />
-
           <FormField
             id="email"
             label="Email"
@@ -96,7 +128,6 @@ export default function Register() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-
           <FormField
             id="password"
             label="Contraseña"
@@ -110,7 +141,6 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
             error={passwordError}
           />
-
           <FormField
             id="confirm"
             label="Repetir contraseña"
@@ -121,12 +151,23 @@ export default function Register() {
             onChange={(e) => setConfirm(e.target.value)}
             error={confirmError}
           />
-            <div className="register__terms">
-                Al crear tu cuenta aceptás nuestros{" "}
-                <Link to="/terminos" className="link">Términos de servicio</Link> y{" "}
-                <Link to="/privacidad" className="link">Política de privacidad</Link>.
-            </div>
-          <button className="btn-primary register__submit" type="submit" disabled={!canSubmit}>
+
+          <div className="register__terms">
+            Al crear tu cuenta aceptás nuestros{" "}
+            <Link to="/terminos" className="link">
+              Términos de servicio
+            </Link>{" "}
+            y{" "}
+            <Link to="/privacidad" className="link">
+              Política de privacidad
+            </Link>.
+          </div>
+
+          <button
+            className="btn-primary register__submit"
+            type="submit"
+            disabled={!canSubmit}
+          >
             <UserPlus size={18} /> Crear cuenta
           </button>
         </form>

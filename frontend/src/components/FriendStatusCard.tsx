@@ -1,11 +1,17 @@
 import "../styles/FriendStatusCard.css";
+import { useAuthContext } from "../contexts/AuthContext";
 
 type Props = {
+  id: string;
   name: string;
   status: "Conectado" | "Ocupado" | "Offline";
+  removable?: boolean;
+  removeHandler?: () => void;
+  acceptHandler?: () => void;
+  rejectHandler?: () => void;
 };
 
-export default function FriendStatusCard({ name, status }: Props) {
+export default function FriendStatusCard({ id, name, status, removable, removeHandler, acceptHandler, rejectHandler }: Props) {
   return (
     <div className="fstatus">
       <div className="fstatus__left">
@@ -15,6 +21,20 @@ export default function FriendStatusCard({ name, status }: Props) {
           <p className="fstatus__subtitle">Amigo</p>
         </div>
       </div>
+
+      {removable && (
+        <button className="btn-ghost" onClick={removeHandler}>
+          Eliminar
+        </button>
+      )}
+
+      {acceptHandler && rejectHandler && (
+        <div className="fstatus__actions">
+          <button className="btn-primary" onClick={acceptHandler}>Aceptar</button>
+          <button className="btn-secondary" onClick={rejectHandler}>Rechazar</button>
+        </div>
+      )}
+
       <span className={`badge ${statusClass(status)}`}>{status}</span>
     </div>
   );
@@ -23,5 +43,5 @@ export default function FriendStatusCard({ name, status }: Props) {
 function statusClass(s: Props["status"]) {
   if (s === "Conectado") return "badge--ok";
   if (s === "Ocupado") return "badge--warn";
-  return "badge--muted"; // Offline
+  return "badge--muted";
 }

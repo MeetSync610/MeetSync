@@ -3,7 +3,8 @@ import { Link, NavLink } from "react-router-dom";
 import "../styles/Nav.css";
 import logo from "../assets/logo2.png";
 import { CalendarArrowUp, Link as LinkIcon, LogIn, Menu, X } from "lucide-react";
-import { Sun, Moon } from "lucide-react"; // Si no tenés lucide-react, usá cualquier ícono
+import { Sun, Moon } from "lucide-react"; 
+import { useAuthContext } from "../contexts/AuthContext";
 
 function getInitialTheme() {
   const saved = localStorage.getItem("theme");
@@ -12,10 +13,11 @@ function getInitialTheme() {
   return "dark";
 }
 
-
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState(getInitialTheme);
+
+  const { session, logout } = useAuthContext();
 
   useEffect(() => {
     document.body.classList.toggle("light", theme === "light");
@@ -23,14 +25,12 @@ export default function Nav() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Cerrar al cambiar de ruta si el user toca un link
   useEffect(() => {
     const close = () => setOpen(false);
     window.addEventListener("hashchange", close);
     return () => window.removeEventListener("hashchange", close);
   }, []);
 
-  // Evita scroll del body cuando el menú está abierto
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
   }, [open]);
@@ -51,8 +51,9 @@ export default function Nav() {
           <div className="nav__links nav__links--desktop">
             <NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
             <NavLink to="/friends" onClick={() => setOpen(false)}>Amigos</NavLink>
-            <NavLink to="/login" onClick={() => setOpen(false)}>Login</NavLink>
+            {!session && <NavLink to="/login" onClick={() => setOpen(false)}>Login</NavLink>}
           </div>
+
           <div className="nav__actions nav__actions--desktop">
             <NavLink to="/schedule" className="btn-outline" onClick={() => setOpen(false)}>
               <CalendarArrowUp size={18}/> Crear horario
@@ -60,9 +61,18 @@ export default function Nav() {
             <NavLink to="/sync" className="btn-outline" onClick={() => setOpen(false)}>
               <LinkIcon size={18}/> Crear sincronización
             </NavLink>
-            <NavLink to="/login" className="btn-outline btn-primary" onClick={() => setOpen(false)}>
-              <LogIn size={18}/> Entrar
-            </NavLink>
+
+            {/* Botón Entrar / Cerrar sesión */}
+            {session ? (
+              <button className="btn-outline btn-primary" onClick={logout}>
+                Cerrar sesión
+              </button>
+            ) : (
+              <NavLink to="/login" className="btn-outline btn-primary" onClick={() => setOpen(false)}>
+                <LogIn size={18} /> Entrar
+              </NavLink>
+            )}
+
             <button
               className="btn-theme"
               aria-label="Cambiar tema"
@@ -89,17 +99,16 @@ export default function Nav() {
       {/* Panel móvil */}
       <div className={`nav__mobile ${open ? "is-open" : ""}`} id="navmenu" role="dialog" aria-modal="true">
         <div className="nav__mobile-inner">
-          <button
-            className="nav__mobile-close"
-            aria-label="Cerrar menú"
-            onClick={() => setOpen(false)}>
+          <button className="nav__mobile-close" aria-label="Cerrar menú" onClick={() => setOpen(false)}>
             <X size={22} />
           </button>
-          
+
           <div className="nav__group">
             <NavLink to="/" onClick={() => setOpen(false)} className="nav__m-link">Home</NavLink>
             <NavLink to="/friends" onClick={() => setOpen(false)} className="nav__m-link">Amigos</NavLink>
-            <NavLink to="/login" onClick={() => setOpen(false)} className="nav__m-link">Login</NavLink>
+            {!session && (
+              <NavLink to="/login" onClick={() => setOpen(false)} className="nav__m-link">Login</NavLink>
+            )}
           </div>
 
           <div className="nav__group">
@@ -109,9 +118,18 @@ export default function Nav() {
             <NavLink to="/sync" onClick={() => setOpen(false)} className="nav__m-btn">
               <LinkIcon size={18}/> Crear sincronización
             </NavLink>
-            <NavLink to="/login" onClick={() => setOpen(false)} className="nav__m-btn nav__m-btn--primary">
-              <LogIn size={18}/> Entrar
-            </NavLink>
+
+            {/* Botón Entrar / Cerrar sesión móvil */}
+            {session ? (
+              <button onClick={() => { logout(); setOpen(false); }} className="nav__m-btn nav__m-btn--primary">
+                Cerrar sesión
+              </button>
+            ) : (
+              <NavLink to="/login" onClick={() => setOpen(false)} className="nav__m-btn nav__m-btn--primary">
+                <LogIn size={18}/> Entrar
+              </NavLink>
+            )}
+
             <button
               className="btn-theme"
               aria-label="Cambiar tema"
@@ -124,7 +142,7 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* Overlay para tapar el fondo y cerrar al tocar */}
+      {/* Overlay */}
       {open && <button className="nav__overlay" aria-label="Cerrar menú" onClick={() => setOpen(false)} />}
     </header>
   );

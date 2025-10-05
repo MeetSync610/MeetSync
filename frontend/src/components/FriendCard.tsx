@@ -1,14 +1,15 @@
 import "../styles/FriendCard.css";
-import { UserCheck, UserPlus } from "lucide-react";
+import { UserCheck, UserPlus, Clock } from "lucide-react";
 
 type FriendCardProps = {
   name: string;
   isFriend: boolean;
+  isPending?: boolean;
+  onAdd?: () => void;
 };
 
-export default function FriendCard({ name, isFriend }: FriendCardProps) {
-
-  let subtitle = isFriend? "Amigo" : "Sugerido";
+export default function FriendCard({ name, isFriend, isPending, onAdd }: FriendCardProps) {
+  let subtitle = isFriend ? "Amigo" : isPending ? "Pendiente" : "Sugerido";
 
   return (
     <div className="fcard">
@@ -21,10 +22,14 @@ export default function FriendCard({ name, isFriend }: FriendCardProps) {
       </div>
 
       <div className="fcard__right">
-        {isFriend? (
-          <span className="badge"><UserCheck/></span>
+        {isFriend ? (
+          <span className="badge"><UserCheck /></span>
+        ) : isPending ? (
+          <span className="badge"><Clock /></span>
         ) : (
-          <button className="btn-ghost"><UserPlus/></button>
+          <button className="btn-ghost" onClick={onAdd}>
+            <UserPlus />
+          </button>
         )}
       </div>
     </div>
