@@ -7,6 +7,15 @@ export interface Profile {
   username: string;
 }
 
+export type TimeBlock = {
+  id: string;
+  start: Date;
+  end: Date;
+  summary: string;
+  color: string;
+  googleId?: string;
+}
+
 export interface FriendRequest {
   id: string;
   sender_id: string;
@@ -20,6 +29,7 @@ export interface AuthContextType {
   friends: Profile[];
   pendingFriendRequests: FriendRequest[];
   allProfiles: Profile[];
+  syncBlocks: TimeBlock[];
   searchFriends: (query: string) => Promise<Profile[]>;
   sendFriendRequest: (receiverId: string) => Promise<void>;
   removeFriend: (friendId: string) => Promise<void>;
@@ -29,7 +39,8 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   loadFriends: (userId: string) => Promise<void>;           
   loadPendingFriendRequests: (userId: string) => Promise<void>;
-  
+  sync1to1: (friendId: number) => Promise<void>;
+  syncMany: (friendsId: number[]) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +51,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [friends, setFriends] = useState<Profile[]>([]);
   const [pendingFriendRequests, setPendingFriendRequests] = useState<FriendRequest[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [syncBlocks, setSyncBlocks] = useState<TimeBlock[]>([]);
 
   // ------------------- Inicialización -------------------
   useEffect(() => {
@@ -307,6 +319,34 @@ export const AuthProvider = ({ children }: { children: any }) => {
     }
   };
 
+
+
+
+  const sync1to1 = async (friendId: number) => {
+    if (!session) return;
+    try {
+      const userId = session.user.id;
+      const syncAux = await supabase.rpc('sync', {userId, friendId})
+      setSyncBlocks(syncAux);
+    } catch (err: any) {
+      console.error("Error al sincronizar 1 a 1:", err.message);
+    }
+  }
+
+
+
+
+  const syncMany = async (friendsId: number[]) => {
+    if (!session) return;
+    try {
+      const userId = session.user.id;
+      const syncAux = await supabase.rpc('sync_many', {...friendsId, userId})
+      setSyncBlocks(syncAux);
+    } catch (err: any) {
+      console.error("Error al sincronizar varios:", err.message);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -315,6 +355,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
         friends,
         pendingFriendRequests,
         allProfiles,
+        syncBlocks,
         searchFriends,
         sendFriendRequest,
         removeFriend,
@@ -324,6 +365,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
         logout,
         loadFriends,          
         loadPendingFriendRequests,
+        sync1to1,
+        syncMany
       }}
     >
       {children}

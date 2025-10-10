@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import "../styles/Sync.css";
+import "../styles/PersonPickItem.css";
 import { Link } from "react-router-dom";
 import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
 import SectionCard from "./SectionCard";
 import PersonPickItem from "./PersonPickItem";
+import Schedule from "./Schedule";
+import type { TimeBlock } from "../contexts/AuthContext"
+import { useAuthContext } from "../contexts/AuthContext";
 
 type User = {
   id: number;
@@ -13,6 +17,17 @@ type User = {
 export default function Sync() {
   // Tipamos el estado como User[]
   const [friends, setFriends] = useState<User[]>([]);
+  const [toSyncMany, setToSyncMany] = useState<number[]>([]);
+  const [show, setShow] = useState<boolean>(false);
+  const {
+    syncBlocks,
+    sync1to1,
+    syncMany,
+  } = useAuthContext();
+
+  useEffect(() => {
+    console.log(syncBlocks);
+  }, syncBlocks)
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/friends`)
@@ -20,6 +35,16 @@ export default function Sync() {
       .then((data: User[]) => setFriends(data))
       .catch((err) => console.error("Error al traer amigos:", err));
   }, []);
+
+  const handleSyncMany = (userId: number) => {
+    if(toSyncMany?.find((e) => e == userId)) {
+      setToSyncMany(toSyncMany.filter((e) => e != userId));
+    } else {
+      setToSyncMany([ ...toSyncMany, userId ]);
+    }
+    syncMany(toSyncMany!);
+    setShow(true);
+  }
 
   return (
     <section className="sync">
@@ -35,17 +60,13 @@ export default function Sync() {
             >
               <div className="sync__list">
                 {friends.map((frn, i) => (
-                  <PersonPickItem
-                    key={i}
-                    name={frn.name}
-                    mode="radio"
-                    group="peer"
-                  />
+                  <label className="ppick">
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync1to1(frn.id); setShow(true) }}/>
+                    <div className="ppick__avatar" />
+                    <span className="ppick__name">{frn.name}</span>
+                  </label>
                 ))}
               </div>
-              <button className="btn-primary sync__btn">
-                <LinkIcon size={18} /> Sincronizar 1 a 1
-              </button>
             </SectionCard>
 
             {/* Grupo */}
@@ -55,17 +76,15 @@ export default function Sync() {
             >
               <div className="sync__list">
                 {friends.map((frn, i) => (
-                  <PersonPickItem key={i} name={frn.name} mode="checkbox" />
+                  <label className="ppick">
+                    <input type="checkbox" name="many" value={frn.id} onChange={() => handleSyncMany(frn.id)}/>
+                    <div className="ppick__avatar" />
+                    <span className="ppick__name">{frn.name}</span>
+                  </label>
                 ))}
               </div>
 
               <div className="sync__actions">
-                <button className="btn-outline">
-                  <UserPlus size={16} /> Invitar por link
-                </button>
-                <button className="btn-primary">
-                  <Link2 size={18} /> Crear sincronización grupal
-                </button>
               </div>
             </SectionCard>
           </div>
@@ -76,7 +95,7 @@ export default function Sync() {
             <Calendar size={16} /> Volver a tu horario
           </Link>
         </div>
-      </div>
+      </div>{show && (<Schedule></Schedule>)}
     </section>
   );
 }
