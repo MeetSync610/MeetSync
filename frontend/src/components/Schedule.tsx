@@ -69,7 +69,6 @@ export default function Schedule() {
 
       if (existingIndex >= 0) {
         const existing = merged[existingIndex];
-        merged[existingIndex] = { ...existing, ...nb, color: existing.color || nb.color };
         // preferimos el color nuevo (nb.color) si viene; si no, mantenemos el existing.color
         merged[existingIndex] = { ...existing, ...nb, color: nb.color ?? existing.color };
       } else {
@@ -264,12 +263,11 @@ export default function Schedule() {
       const data = await res.json().catch(() => ({}));
       if (!data.success) return alert(data.message || "Error guardando bloque");
 
-      if (!newBlock.id && data.block?.id) newBlock.id = data.block.id;
-
-      // --- GOOGLE SYNC handled by backend (do not call calendar endpoints from frontend) ---
-
-      // --- ✅ ACTUALIZAR ESTADO LOCAL SIN DUPLICADOS ---
-      setBlocks(prev => mergeBlocks(prev, [newBlock]));
+      // refrescar listados desde backend para evitar duplicados/inconsistencias
+      await fetchUserBlocks();
+      if (session?.user?.hasGoogleToken) {
+        await fetchGoogleEvents();
+      }
       setEditingIndex(null);
     } catch (err) {
       console.error("saveBlock error:", err);
