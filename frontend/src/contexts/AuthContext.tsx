@@ -39,8 +39,8 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   loadFriends: (userId: string) => Promise<void>;           
   loadPendingFriendRequests: (userId: string) => Promise<void>;
-  sync1to1: (friendId: number) => Promise<void>;
-  syncMany: (friendsId: number[]) => Promise<void>;
+  sync1to1: (friendId: string) => Promise<void>;
+  syncMany: (friendsId: string[]) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -322,11 +322,11 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 
 
-  const sync1to1 = async (friendId: number) => {
+  const sync1to1 = async (id2: string) => {
   if (!session) return;
   try {
-    const userId = session.user.id;
-    const { data, error } = await supabase.rpc('sync', { userId, friendId });
+    const id1 = session.user.id;
+    const { data, error } = await supabase.rpc('sync', { id1, id2 });
 
     if (error) throw error;
 
@@ -347,11 +347,11 @@ export const AuthProvider = ({ children }: { children: any }) => {
   }
 }
 
-const syncMany = async (friendsId: number[]) => {
+const syncMany = async (friendsId: string[]) => {
   if (!session) return;
   try {
-    const userId = session.user.id;
-    const { data, error } = await supabase.rpc('sync_many', { friendsId, userId });
+    const ids = [ ...friendsId, session.user.id];
+    const { data, error } = await supabase.rpc('sync_many', { ids });
 
     if (error) throw error;
 

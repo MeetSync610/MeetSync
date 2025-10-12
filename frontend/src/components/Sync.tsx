@@ -7,30 +7,21 @@ import Schedule from "./Schedule";
 import { useAuthContext } from "../contexts/AuthContext";
 import { Calendar as CalendarIcon } from "lucide-react";
 
-type User = {
-  id: number;
-  name: string;
-};
-
 export default function Sync() {
-  const [friends, setFriends] = useState<User[]>([]);
-  const [toSyncMany, setToSyncMany] = useState<number[]>([]);
+  const [toSyncMany, setToSyncMany] = useState<string[]>([]);
   const [show, setShow] = useState<boolean>(false);
-
-  const { syncBlocks, sync1to1, syncMany } = useAuthContext();
+  const {
+    friends,
+    syncBlocks,
+    sync1to1,
+    syncMany,
+  } = useAuthContext();
 
   useEffect(() => {
     console.log(syncBlocks);
   }, [syncBlocks]);
 
-  useEffect(() => {
-    fetch(`http://localhost:3000/api/friends`)
-      .then((res) => res.json())
-      .then((data: User[]) => setFriends(data))
-      .catch((err) => console.error("Error al traer amigos:", err));
-  }, []);
-
-  const handleSyncMany = (userId: number) => {
+  const handleSyncMany = (userId: string) => {
     const newToSync = toSyncMany.includes(userId)
       ? toSyncMany.filter((e) => e !== userId)
       : [...toSyncMany, userId];
@@ -53,15 +44,10 @@ export default function Sync() {
               description="Elegí un amigo para cruzar horarios."
             >
               <div className="sync__list">
-                {friends.map((frn) => (
-                  <label className="ppick" key={frn.id}>
-                    <input
-                      type="radio"
-                      name="1to1"
-                      value={frn.id}
-                      onChange={() => { sync1to1(frn.id); setShow(true); }}
-                    />
-                    <div className="ppick__avatar" />
+                {friends.map((frn, i) => (
+                  <label className="ppick" key={i + "l"}>
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync1to1(frn.id); setShow(true) }} key={i + "i"}/>
+                    <div className="ppick__avatar" key={i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
                 ))}
@@ -74,15 +60,10 @@ export default function Sync() {
               description="Armá un grupo y cruzá horarios de todos."
             >
               <div className="sync__list">
-                {friends.map((frn) => (
-                  <label className="ppick" key={frn.id}>
-                    <input
-                      type="checkbox"
-                      name="many"
-                      value={frn.id}
-                      onChange={() => handleSyncMany(frn.id)}
-                    />
-                    <div className="ppick__avatar" />
+                {friends.map((frn, i) => (
+                  <label className="ppick" key={-i + "l"}>
+                    <input type="checkbox" name="many" value={frn.id} onChange={() => handleSyncMany(frn.id)} key={-i + "i"}/>
+                    <div className="ppick__avatar" key={-i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
                 ))}
@@ -97,8 +78,7 @@ export default function Sync() {
           </Link>
         </div>
       </div>
-
-      {show && <Schedule />}
+      {show && (<Schedule></Schedule>)}
     </section>
   );
 }
