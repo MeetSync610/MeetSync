@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const { google } = require("googleapis");
 const session = require("express-session");
-const friendsRouter = require("./routes/friendsRoutes");
+// const friendsRouter = require("./routes/friendsRoutes");
 const blocksRouter = require("./routes/blocksRouter");
 
 
@@ -68,7 +68,7 @@ const oauth2Client = new google.auth.OAuth2(
 app.use("/api/blocks", blocksRouter);
 
 // Amigos
-app.use('/api/friends', friendsRouter);
+// app.use('/api/friends', friendsRouter);
 
 // URL de login
 app.get("/auth/google/url", (req, res) => {
