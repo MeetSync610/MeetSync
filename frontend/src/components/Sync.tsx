@@ -2,13 +2,10 @@ import { useState, useEffect } from "react";
 import "../styles/Sync.css";
 import "../styles/PersonPickItem.css";
 import { Link } from "react-router-dom";
-// import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
 import SectionCard from "./SectionCard";
-// import PersonPickItem from "./PersonPickItem";
 import Schedule from "./Schedule";
-// import type { TimeBlock } from "../contexts/AuthContext"
 import { useAuthContext } from "../contexts/AuthContext";
-import { Calendar } from "react-calendar";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 type User = {
   id: number;
@@ -16,19 +13,15 @@ type User = {
 };
 
 export default function Sync() {
-  // Tipamos el estado como User[]
   const [friends, setFriends] = useState<User[]>([]);
   const [toSyncMany, setToSyncMany] = useState<number[]>([]);
   const [show, setShow] = useState<boolean>(false);
-  const {
-    syncBlocks,
-    sync1to1,
-    syncMany,
-  } = useAuthContext();
+
+  const { syncBlocks, sync1to1, syncMany } = useAuthContext();
 
   useEffect(() => {
     console.log(syncBlocks);
-  }, syncBlocks)
+  }, [syncBlocks]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/friends`)
@@ -38,14 +31,14 @@ export default function Sync() {
   }, []);
 
   const handleSyncMany = (userId: number) => {
-    if(toSyncMany?.find((e) => e == userId)) {
-      setToSyncMany(toSyncMany.filter((e) => e != userId));
-    } else {
-      setToSyncMany([ ...toSyncMany, userId ]);
-    }
-    syncMany(toSyncMany!);
+    const newToSync = toSyncMany.includes(userId)
+      ? toSyncMany.filter((e) => e !== userId)
+      : [...toSyncMany, userId];
+
+    setToSyncMany(newToSync);
+    syncMany(newToSync); // Usamos la copia actualizada
     setShow(true);
-  }
+  };
 
   return (
     <section className="sync">
@@ -60,9 +53,14 @@ export default function Sync() {
               description="Elegí un amigo para cruzar horarios."
             >
               <div className="sync__list">
-                {friends.map((frn /* , i */) => (
-                  <label className="ppick">
-                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync1to1(frn.id); setShow(true) }}/>
+                {friends.map((frn) => (
+                  <label className="ppick" key={frn.id}>
+                    <input
+                      type="radio"
+                      name="1to1"
+                      value={frn.id}
+                      onChange={() => { sync1to1(frn.id); setShow(true); }}
+                    />
                     <div className="ppick__avatar" />
                     <span className="ppick__name">{frn.name}</span>
                   </label>
@@ -76,16 +74,18 @@ export default function Sync() {
               description="Armá un grupo y cruzá horarios de todos."
             >
               <div className="sync__list">
-                {friends.map((frn /* , i */) => (
-                  <label className="ppick">
-                    <input type="checkbox" name="many" value={frn.id} onChange={() => handleSyncMany(frn.id)}/>
+                {friends.map((frn) => (
+                  <label className="ppick" key={frn.id}>
+                    <input
+                      type="checkbox"
+                      name="many"
+                      value={frn.id}
+                      onChange={() => handleSyncMany(frn.id)}
+                    />
                     <div className="ppick__avatar" />
                     <span className="ppick__name">{frn.name}</span>
                   </label>
                 ))}
-              </div>
-
-              <div className="sync__actions">
               </div>
             </SectionCard>
           </div>
@@ -93,10 +93,12 @@ export default function Sync() {
 
         <div className="sync__back">
           <Link to="/schedule" className="btn-outline">
-            <Calendar size={16} /> Volver a tu horario
+            <CalendarIcon size={16} /> Volver a tu horario
           </Link>
         </div>
-      </div>{show && (<Schedule></Schedule>)}
+      </div>
+
+      {show && <Schedule />}
     </section>
   );
 }

@@ -323,29 +323,55 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 
   const sync1to1 = async (friendId: number) => {
-    if (!session) return;
-    try {
-      const userId = session.user.id;
-      const syncAux = await supabase.rpc('sync', {userId, friendId})
-      // comento para q funcione en render setSyncBlocks(syncAux);
-    } catch (err: any) {
-      console.error("Error al sincronizar 1 a 1:", err.message);
-    }
+  if (!session) return;
+  try {
+    const userId = session.user.id;
+    const { data, error } = await supabase.rpc('sync', { userId, friendId });
+
+    if (error) throw error;
+
+    // Aquí convertimos manualmente los datos a TimeBlock[]
+    const blocks: TimeBlock[] = (data || []).map((b: any) => ({
+      id: b.id,
+      start: new Date(b.start),
+      end: new Date(b.end),
+      summary: b.summary,
+      color: b.color,
+      googleId: b.googleId || undefined
+    }));
+
+    setSyncBlocks(blocks);
+  } catch (err: any) {
+    console.error("Error al sincronizar 1 a 1:", err.message);
+    setSyncBlocks([]);
   }
+}
 
+const syncMany = async (friendsId: number[]) => {
+  if (!session) return;
+  try {
+    const userId = session.user.id;
+    const { data, error } = await supabase.rpc('sync_many', { friendsId, userId });
 
+    if (error) throw error;
 
+    const blocks: TimeBlock[] = (data || []).map((b: any) => ({
+      id: b.id,
+      start: new Date(b.start),
+      end: new Date(b.end),
+      summary: b.summary,
+      color: b.color,
+      googleId: b.googleId || undefined
+    }));
 
-  const syncMany = async (friendsId: number[]) => {
-    if (!session) return;
-    try {
-      const userId = session.user.id;
-      const syncAux = await supabase.rpc('sync_many', {...friendsId, userId})
-      // comento para q funcione en render setSyncBlocks(syncAux);
-    } catch (err: any) {
-      console.error("Error al sincronizar varios:", err.message);
-    }
+    setSyncBlocks(blocks);
+  } catch (err: any) {
+    console.error("Error al sincronizar varios:", err.message);
+    setSyncBlocks([]);
   }
+}
+
+
 
   return (
     <AuthContext.Provider
