@@ -3,79 +3,77 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const { google } = require("googleapis");
 const session = require("express-session");
-// const friendsRouter = require("./routes/friendsRoutes");
 const blocksRouter = require("./routes/blocksRouter");
-
-
-
 
 dotenv.config();
 const app = express();
-app.use(express.json()); // <--- PARSEO DE JSON
 const PORT = process.env.PORT || 3000;
+const IS_PROD = process.env.NODE_ENV === "production";
 
-const FRONTEND_URL = process.env.NODE_ENV === "production"
-  ? "https://meetsync106.onrender.com"
-  : "http://localhost:5173";
+// FRONTEND / BACKEND URLs
+const FRONTEND_URL = process.env.FRONTEND_URL || (IS_PROD ? "https://meetsync106.onrender.com" : "http://localhost:5173");
+const BACKEND_URL = process.env.BACKEND_URL || (IS_PROD ? `https://meetsync-9g91.onrender.com` : `http://localhost:${PORT}`);
 
-// -------------------- CORS --------------------
-app.use(cors({
-  origin: FRONTEND_URL, // tu frontend
-  credentials: true,    // ⚡ muy importante para enviar cookies
-}));
+// trust proxy when behind a proxy (Render, Heroku, etc.) so secure cookies work
+if (IS_PROD) app.set("trust proxy", 1);
 
-// -------------------- SESIÓN --------------------
-app.use(session({
-  secret: process.env.SESSION_SECRET || "supersecreto",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // 🔹 si estás en dev, debe ser false
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    maxAge: 1000 * 60 * 60 * 24,
-  }
+// body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// CORS: allow frontend origin and credentials
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+);
 
-}));
+// SESSION
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "supersecreto",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: IS_PROD, // only send cookie over HTTPS in production
+      sameSite: IS_PROD ? "none" : "lax", // allow cross-site cookies in prod when frontend and backend are on different origins
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    },
+  })
+);
 
+// helper to create OAuth2 client with correct redirectUri
+function makeOauthClient() {
+  const redirectUri = IS_PROD
+    ? `${BACKEND_URL.replace(/\/$/, "")}/auth/google/callback`
+    : `http://localhost:${PORT}/auth/google/callback`;
 
+  return new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri
+  );
+}
+
+// -------------------- SESSION API --------------------
 app.post("/api/session", (req, res) => {
   const { userId } = req.body;
   if (!userId) return res.status(400).json({ success: false, message: "Falta userId" });
 
   req.session.user = { id: userId };
-
-  // ✅ devuelve si el usuario ya hizo login de Google
   res.json({ success: true, hasGoogleToken: !!req.session.tokens });
 });
 
-
-// -------------------- OAuth Google --------------------
-const redirectUri = process.env.NODE_ENV === "production"
-  ? `${process.env.BACKEND_URL}/auth/google/callback`
-  : `http://localhost:${PORT}/auth/google/callback`;
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri
-);
-
-// -------------------- RUTAS --------------------
-
-// Bloques
-app.use("/api/blocks", blocksRouter);
-
-// Amigos
-// app.use('/api/friends', friendsRouter);
-
-// URL de login
+// -------------------- AUTH (Google OAuth) --------------------
 app.get("/auth/google/url", (req, res) => {
   try {
+    const oauth2Client = makeOauthClient();
     const url = oauth2Client.generateAuthUrl({
       access_type: "offline",
-      prompt: "consent", // fuerza refresh_token
+      prompt: "consent",
       scope: ["https://www.googleapis.com/auth/calendar.events"],
     });
     res.json({ url });
@@ -85,21 +83,21 @@ app.get("/auth/google/url", (req, res) => {
   }
 });
 
-// Callback de Google
 app.get("/auth/google/callback", async (req, res) => {
   const code = req.query.code;
   if (!code) return res.status(400).send("No code provided");
 
   try {
+    const oauth2Client = makeOauthClient();
     const { tokens } = await oauth2Client.getToken(code);
-
-    // Guardar tokens en sesión
+    // store tokens in session
     req.session.tokens = tokens;
 
-    // Setear credenciales actuales
-    oauth2Client.setCredentials(tokens);
-
-    console.log("TOKENS:", tokens); // para debug
+    // debug log (remove in production)
+    console.log("TOKENS saved in session (masked):", {
+      expires_at: tokens.expiry_date ? new Date(tokens.expiry_date).toISOString() : null,
+      has_refresh_token: !!tokens.refresh_token,
+    });
 
     res.redirect(`${FRONTEND_URL}/?success=true`);
   } catch (err) {
@@ -108,25 +106,26 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 });
 
-// Middleware para asegurarse de que haya tokens
+// middleware to ensure Google tokens exist and set client for route handlers
 function requireAuth(req, res, next) {
-  console.log("Tokens en sesión:", req.session.tokens);
-  if (!req.session.tokens) {
+  if (!req.session?.tokens) {
     return res.status(401).json({ success: false, message: "Usuario no autenticado con Google" });
   }
-  oauth2Client.setCredentials(req.session.tokens);
+  req.oauth2Client = makeOauthClient();
+  req.oauth2Client.setCredentials(req.session.tokens);
   next();
 }
 
-
-// Crear evento
+// -------------------- GOOGLE CALENDAR DIRECT ENDPOINTS (optional) --------------------
+// These endpoints are available if you call /api/calendar/* directly.
+// Many flows in the app call backend /api/blocks which also handles Google sync.
 app.post("/api/calendar", requireAuth, async (req, res) => {
   try {
     const { day, start, finish, summary } = req.body;
     if (!day || !start || !finish || !summary)
       return res.status(400).json({ success: false, message: "Faltan datos" });
 
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+    const calendar = google.calendar({ version: "v3", auth: req.oauth2Client });
     const event = {
       summary,
       start: { dateTime: `${day}T${start}:00`, timeZone: "America/Argentina/Buenos_Aires" },
@@ -141,40 +140,31 @@ app.post("/api/calendar", requireAuth, async (req, res) => {
   }
 });
 
-// Obtener eventos (incluye pasados y futuros)
 app.get("/api/calendar/events", requireAuth, async (req, res) => {
   try {
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-
+    const calendar = google.calendar({ version: "v3", auth: req.oauth2Client });
     const response = await calendar.events.list({
       calendarId: "primary",
-      timeMin: new Date("2000-01-01T00:00:00").toISOString(), // desde el año 2000
-      timeMax: new Date("2100-01-01T00:00:00").toISOString(), // hasta muy adelante
+      timeMin: new Date("2000-01-01T00:00:00").toISOString(),
+      timeMax: new Date("2100-01-01T00:00:00").toISOString(),
       maxResults: 2500,
-      singleEvents: true, // expande eventos recurrentes
+      singleEvents: true,
       orderBy: "startTime",
       showDeleted: false,
       timeZone: "America/Argentina/Buenos_Aires",
     });
-
-    console.log("Eventos obtenidos:", response.data.items?.length || 0);
     res.json({ success: true, events: response.data.items || [] });
-
   } catch (err) {
     console.error("Error obteniendo eventos:", err);
     res.status(500).json({ success: false, message: "Error obteniendo eventos" });
   }
 });
 
-
-
-// Editar evento
 app.put("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { day, start, finish, summary } = req.body;
-
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+    const calendar = google.calendar({ version: "v3", auth: req.oauth2Client });
     const response = await calendar.events.update({
       calendarId: "primary",
       eventId: id,
@@ -191,11 +181,10 @@ app.put("/api/calendar/:id", requireAuth, async (req, res) => {
   }
 });
 
-// Borrar evento
 app.delete("/api/calendar/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+    const calendar = google.calendar({ version: "v3", auth: req.oauth2Client });
     await calendar.events.delete({ calendarId: "primary", eventId: id });
     res.json({ success: true });
   } catch (err) {
@@ -204,8 +193,11 @@ app.delete("/api/calendar/:id", requireAuth, async (req, res) => {
   }
 });
 
-// Ruta de prueba
+// -------------------- API ROUTES --------------------
+app.use("/api/blocks", blocksRouter);
+
+// simple root
 app.get("/", (req, res) => res.send("Backend funcionando correctamente"));
 
-// -------------------- LISTEN --------------------
-app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+// -------------------- START --------------------
+app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT} (PORT env ${process.env.PORT || "<not set>"})`));
