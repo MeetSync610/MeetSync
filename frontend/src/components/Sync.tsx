@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import "../styles/Sync.css";
 import "../styles/PersonPickItem.css";
 import { Link } from "react-router-dom";
-import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
+// import { Link as LinkIcon, Link2, UserPlus, Calendar } from "lucide-react";
 import SectionCard from "./SectionCard";
-import PersonPickItem from "./PersonPickItem";
+// import PersonPickItem from "./PersonPickItem";
 import Schedule from "./Schedule";
-import type { TimeBlock } from "../contexts/AuthContext"
+// import type { TimeBlock } from "../contexts/AuthContext"
 import { useAuthContext } from "../contexts/AuthContext";
 
 type User = {
@@ -59,7 +59,7 @@ export default function Sync() {
               description="Elegí un amigo para cruzar horarios."
             >
               <div className="sync__list">
-                {friends.map((frn, i) => (
+                {friends.map((frn /* , i */) => (
                   <label className="ppick">
                     <input type="radio" name="1to1" value={frn.id} onChange={() => { sync1to1(frn.id); setShow(true) }}/>
                     <div className="ppick__avatar" />
@@ -75,7 +75,7 @@ export default function Sync() {
               description="Armá un grupo y cruzá horarios de todos."
             >
               <div className="sync__list">
-                {friends.map((frn, i) => (
+                {friends.map((frn /* , i */) => (
                   <label className="ppick">
                     <input type="checkbox" name="many" value={frn.id} onChange={() => handleSyncMany(frn.id)}/>
                     <div className="ppick__avatar" />

@@ -327,7 +327,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
     try {
       const userId = session.user.id;
       const syncAux = await supabase.rpc('sync', {userId, friendId})
-      setSyncBlocks(syncAux);
+      // comento para q funcione en render setSyncBlocks(syncAux);
     } catch (err: any) {
       console.error("Error al sincronizar 1 a 1:", err.message);
     }
@@ -341,7 +341,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
     try {
       const userId = session.user.id;
       const syncAux = await supabase.rpc('sync_many', {...friendsId, userId})
-      setSyncBlocks(syncAux);
+      // comento para q funcione en render setSyncBlocks(syncAux);
     } catch (err: any) {
       console.error("Error al sincronizar varios:", err.message);
     }
