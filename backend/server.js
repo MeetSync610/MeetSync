@@ -3,30 +3,53 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const { google } = require("googleapis");
 const session = require("express-session");
+const friendsRouter = require("./routes/friendsRoutes");
+const blocksRouter = require("./routes/blocksRouter");
+
+
+
 
 dotenv.config();
 const app = express();
+app.use(express.json()); // <--- PARSEO DE JSON
 const PORT = process.env.PORT || 3000;
 
-// -------------------- CORS --------------------
 const FRONTEND_URL = process.env.NODE_ENV === "production"
-  ? "https://meetsync106.onrender.com" // frontend en Render
-  : "http://localhost:5173";           // Vite local
+  ? "https://meetsync106.onrender.com"
+  : "http://localhost:5173";
 
+// -------------------- CORS --------------------
 app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true,
+  origin: FRONTEND_URL, // tu frontend
+  credentials: true,    // ⚡ muy importante para enviar cookies
 }));
-
-app.use(express.json());
 
 // -------------------- SESIÓN --------------------
 app.use(session({
-  secret: process.env.SESSION_SECRET || "supersecreto", // poné algo más seguro en Render
+  secret: process.env.SESSION_SECRET || "supersecreto",
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === "production" },
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // 🔹 si estás en dev, debe ser false
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 1000 * 60 * 60 * 24,
+  }
+
+
 }));
+
+
+app.post("/api/session", (req, res) => {
+  const { userId } = req.body;
+  if (!userId) return res.status(400).json({ success: false, message: "Falta userId" });
+
+  req.session.user = { id: userId };
+
+  // ✅ devuelve si el usuario ya hizo login de Google
+  res.json({ success: true, hasGoogleToken: !!req.session.tokens });
+});
+
 
 // -------------------- OAuth Google --------------------
 const redirectUri = process.env.NODE_ENV === "production"
@@ -40,6 +63,12 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 // -------------------- RUTAS --------------------
+
+// Bloques
+app.use("/api/blocks", blocksRouter);
+
+// Amigos
+app.use('/api/friends', friendsRouter);
 
 // URL de login
 app.get("/auth/google/url", (req, res) => {
@@ -81,12 +110,14 @@ app.get("/auth/google/callback", async (req, res) => {
 
 // Middleware para asegurarse de que haya tokens
 function requireAuth(req, res, next) {
+  console.log("Tokens en sesión:", req.session.tokens);
   if (!req.session.tokens) {
     return res.status(401).json({ success: false, message: "Usuario no autenticado con Google" });
   }
   oauth2Client.setCredentials(req.session.tokens);
   next();
 }
+
 
 // Crear evento
 app.post("/api/calendar", requireAuth, async (req, res) => {
@@ -110,24 +141,32 @@ app.post("/api/calendar", requireAuth, async (req, res) => {
   }
 });
 
-// Obtener eventos
+// Obtener eventos (incluye pasados y futuros)
 app.get("/api/calendar/events", requireAuth, async (req, res) => {
   try {
     const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
     const response = await calendar.events.list({
       calendarId: "primary",
-      timeMin: new Date().toISOString(),
-      maxResults: 100,
-      singleEvents: true,
+      timeMin: new Date("2000-01-01T00:00:00").toISOString(), // desde el año 2000
+      timeMax: new Date("2100-01-01T00:00:00").toISOString(), // hasta muy adelante
+      maxResults: 2500,
+      singleEvents: true, // expande eventos recurrentes
       orderBy: "startTime",
+      showDeleted: false,
       timeZone: "America/Argentina/Buenos_Aires",
     });
-    res.json({ success: true, events: response.data.items });
+
+    console.log("Eventos obtenidos:", response.data.items?.length || 0);
+    res.json({ success: true, events: response.data.items || [] });
+
   } catch (err) {
     console.error("Error obteniendo eventos:", err);
     res.status(500).json({ success: false, message: "Error obteniendo eventos" });
   }
 });
+
+
 
 // Editar evento
 app.put("/api/calendar/:id", requireAuth, async (req, res) => {
