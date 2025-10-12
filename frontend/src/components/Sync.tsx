@@ -8,6 +8,7 @@ import SectionCard from "./SectionCard";
 import Schedule from "./Schedule";
 // import type { TimeBlock } from "../contexts/AuthContext"
 import { useAuthContext } from "../contexts/AuthContext";
+import { Calendar } from "react-calendar";
 
 type User = {
   id: number;
