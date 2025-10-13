@@ -104,7 +104,7 @@ export default function Register() {
             id="name"
             label="Nombre"
             type="text"
-            placeholder="Thiago"
+            placeholder="Fulano"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -113,7 +113,7 @@ export default function Register() {
             id="username"
             label="Nombre de usuario"
             type="text"
-            placeholder="thiagopro777"
+            placeholder="fulano_123"
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}

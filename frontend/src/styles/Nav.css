@@ -129,3 +129,8 @@
 }
 .nav__mobile-close:hover { background: var(--bg); border-color: #475569; }
 
+.nav__user-name {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+}

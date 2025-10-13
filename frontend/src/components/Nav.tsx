@@ -17,7 +17,8 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState(getInitialTheme);
 
-  const { session, logout } = useAuthContext();
+  const { session, userProfile, logout } = useAuthContext();
+
 
   useEffect(() => {
     document.body.classList.toggle("light", theme === "light");
@@ -73,14 +74,20 @@ export default function Nav() {
               </NavLink>
             )}
 
-            <button
-              className="btn-theme"
-              aria-label="Cambiar tema"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              style={{ marginLeft: 8 }}
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />} Tema
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <button
+                className="btn-theme"
+                aria-label="Cambiar tema"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />} Tema
+              </button>
+
+              {session && userProfile && (
+                <span className="nav__user-name">Hola, {userProfile.name}</span>
+              )}
+            </div>
+
           </div>
 
           {/* Toggle móvil */}
