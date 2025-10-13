@@ -41,13 +41,18 @@ export default function Schedule({ syncBlocks }: Props) {
 
   // -------------------- LOCAL STORAGE --------------------
   useEffect(() => {
+  if (syncBlocks?.length) {
+    setBlocks(syncBlocks);
+    console.log("Bloques sincronizados:", syncBlocks);
+  } else {
     const savedBlocks = localStorage.getItem("blocks");
-    if (syncBlocks) {setBlocks(syncBlocks)
-      console.log(syncBlocks)
+    if (savedBlocks) {
+      setBlocks(JSON.parse(savedBlocks));
+      console.log("Bloques desde localStorage:", JSON.parse(savedBlocks));
     }
-    else if (savedBlocks) {setBlocks(JSON.parse(savedBlocks));
-    console.log(JSON.parse(savedBlocks))}
-  }, []);
+  }
+}, [syncBlocks?.length]);
+
 
   useEffect(() => {
     if (!syncBlocks) localStorage.setItem("blocks", JSON.stringify(blocks));

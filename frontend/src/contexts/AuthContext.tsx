@@ -340,31 +340,38 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 const syncMany = async (friendsId: string[]) => {
   if (!session) return;
+
   try {
-    const ids = [ ...friendsId, session.user.id];
-    const { data, error } = await supabase.rpc('sync', { ids });
+
+    const ids = [...friendsId, session.user.id];
+
+    const { data, error } = await supabase
+      .from("blocks")
+      .select("*")
+      .in("user_id", ids);
+
     if (error) throw error;
 
-    console.log(data)
 
     const blocks: Block[] = (data || []).map((b: any) => ({
       id: b.id,
       day: b.day,
       start: b.start,
-      end: b.finish,
+      finish: b.finish, 
       summary: b.summary,
       color: b.color,
-      googleId: b.googleId || undefined
+      googleId: b.google_event_id || undefined,
     }));
 
-    console.log(blocks) // {id: 'a5d16cf9-3148-476c-a302-c745ca32465a', user_id: '03a40268-63b7-4b2b-9703-b02d56ead1f2', day: '2025-10-12', start: '11:00:00', finish: '23:00:00', …}
-
+    console.log("Bloques procesados:", blocks);
+    
     setSyncBlocks(blocks);
   } catch (err: any) {
     console.error("Error al sincronizar varios:", err.message);
     setSyncBlocks([]);
   }
-}
+};
+
 
 
 
