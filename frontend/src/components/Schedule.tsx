@@ -9,7 +9,11 @@ import { useState, useEffect } from "react";
 import type { Block } from "../types";
 import { useAuthContext } from "../contexts/AuthContext";
 
-export default function Schedule() {
+type Props = {
+  syncBlocks?: Block[];
+};
+
+export default function Schedule({ syncBlocks }: Props) {
   const monthNames = [
     "Enero","Febrero","Marzo","Abril","Mayo","Junio",
     "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
@@ -38,11 +42,15 @@ export default function Schedule() {
   // -------------------- LOCAL STORAGE --------------------
   useEffect(() => {
     const savedBlocks = localStorage.getItem("blocks");
-    if (savedBlocks) setBlocks(JSON.parse(savedBlocks));
+    if (syncBlocks) {setBlocks(syncBlocks)
+      console.log(syncBlocks)
+    }
+    else if (savedBlocks) {setBlocks(JSON.parse(savedBlocks));
+    console.log(JSON.parse(savedBlocks))}
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("blocks", JSON.stringify(blocks));
+    if (!syncBlocks) localStorage.setItem("blocks", JSON.stringify(blocks));
   }, [blocks]);
 
   // -------------------- MERGE SIN DUPLICADOS --------------------
@@ -81,7 +89,7 @@ export default function Schedule() {
 
   // -------------------- SESIÓN Y BLOQUES --------------------
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (!session?.user?.id || syncBlocks) return;
 
     const initSessionAndBlocks = async () => {
       try {
@@ -283,7 +291,8 @@ export default function Schedule() {
 
     // optimista: quitar de UI inmediatamente
     setBlocks(prev => prev.filter((_, i) => i !== index));
-
+    
+    if (!syncBlocks) {
     try {
       // Si tenemos id local, borramos por id (como antes)
       if (blockToDelete.id) {
@@ -341,7 +350,7 @@ export default function Schedule() {
       // restaurar UI porque la eliminación falló realmente
       setBlocks(previousBlocks);
       alert("No se pudo eliminar el bloque en el servidor. Revisa la consola para más detalles.");
-    }
+    }}
   };
 
   // -------------------- NAVEGACIÓN --------------------
@@ -397,7 +406,7 @@ export default function Schedule() {
       <div className="container">
         <div className="schedule__head">
           <div>
-            <h1>Tu horario - {view ? "Vista Semanal" : "Vista Mensual"}</h1>
+            <h1>{syncBlocks ? "Horario Sincronizado" : "Tu Horario"} - {view ? "Vista Semanal" : "Vista Mensual"}</h1>
             <button className="btn-outline" onClick={()=>setView(!view)}>Cambiar Vista</button>
           </div>
           {view
@@ -414,7 +423,7 @@ export default function Schedule() {
               : <div className="schedule__weeklabel">
                   {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                 </div>}
-            <div className="schedule__actions">
+            {!syncBlocks && <div className="schedule__actions">
               <button className="btn-outline" onClick={()=>showForm()}><Plus size={16}/> Agregar bloque</button>
               <button
                 className={`btn-outline ${isSynced ? "synced" : ""}`}
@@ -422,7 +431,7 @@ export default function Schedule() {
               >
                 <RefreshCcw size={16}/> {isSynced ? "Sincronizado ✅" : "Sincronizar Google"}
               </button>
-            </div>
+            </div>}
           </div>
 
           <div className="schedule__gridwrap">
@@ -433,9 +442,9 @@ export default function Schedule() {
           <p className="schedule__hint">Cada bloque representa un horario donde no estás disponible.</p>
         </div>
 
-        <div className="schedule__cta">
+        {!syncBlocks && <div className="schedule__cta">
           <Link to="/sync" className="btn-primary"><LinkIcon size={18}/> Crear sincronización</Link>
-        </div>
+        </div>}
       </div>
 
       {overlayVisible && (

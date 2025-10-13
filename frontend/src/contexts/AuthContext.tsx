@@ -1,19 +1,11 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { supabase } from "../supabaseClient";
+import type { Block } from "../types";
 
 export interface Profile {
   id: string;
   name: string;
   username: string;
-}
-
-export type TimeBlock = {
-  id: string;
-  start: Date;
-  end: Date;
-  summary: string;
-  color: string;
-  googleId?: string;
 }
 
 export interface FriendRequest {
@@ -29,7 +21,7 @@ export interface AuthContextType {
   friends: Profile[];
   pendingFriendRequests: FriendRequest[];
   allProfiles: Profile[];
-  syncBlocks: TimeBlock[];
+  syncBlocks: Block[];
   searchFriends: (query: string) => Promise<Profile[]>;
   sendFriendRequest: (receiverId: string) => Promise<void>;
   removeFriend: (friendId: string) => Promise<void>;
@@ -39,7 +31,6 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   loadFriends: (userId: string) => Promise<void>;           
   loadPendingFriendRequests: (userId: string) => Promise<void>;
-  sync1to1: (friendId: string) => Promise<void>;
   syncMany: (friendsId: string[]) => Promise<void>;
 }
 
@@ -51,7 +42,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [friends, setFriends] = useState<Profile[]>([]);
   const [pendingFriendRequests, setPendingFriendRequests] = useState<FriendRequest[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
-  const [syncBlocks, setSyncBlocks] = useState<TimeBlock[]>([]);
+  const [syncBlocks, setSyncBlocks] = useState<Block[]>([]);
 
   // ------------------- Inicialización -------------------
   useEffect(() => {
@@ -322,16 +313,16 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 
 
-  const sync1to1 = async (id2: string) => {
+  /* const sync1to1 = async (id2: string) => {
   if (!session) return;
   try {
-    const id1 = session.user.id;
-    const { data, error } = await supabase.rpc('sync', { id1, id2 });
+    const ids = [session.user.id, id2];
+    const { data, error } = await supabase.rpc('sync', { ids });
 
     if (error) throw error;
 
-    // Aquí convertimos manualmente los datos a TimeBlock[]
-    const blocks: TimeBlock[] = (data || []).map((b: any) => ({
+    // Aquí convertimos manualmente los datos a Block[]
+    const blocks: Block[] = (data || []).map((b: any) => ({
       id: b.id,
       start: new Date(b.start),
       end: new Date(b.end),
@@ -345,24 +336,28 @@ export const AuthProvider = ({ children }: { children: any }) => {
     console.error("Error al sincronizar 1 a 1:", err.message);
     setSyncBlocks([]);
   }
-}
+} */
 
 const syncMany = async (friendsId: string[]) => {
   if (!session) return;
   try {
     const ids = [ ...friendsId, session.user.id];
-    const { data, error } = await supabase.rpc('sync_many', { ids });
-
+    const { data, error } = await supabase.rpc('sync', { ids });
     if (error) throw error;
 
-    const blocks: TimeBlock[] = (data || []).map((b: any) => ({
+    console.log(data)
+
+    const blocks: Block[] = (data || []).map((b: any) => ({
       id: b.id,
-      start: new Date(b.start),
-      end: new Date(b.end),
+      day: b.day,
+      start: b.start,
+      end: b.finish,
       summary: b.summary,
       color: b.color,
       googleId: b.googleId || undefined
     }));
+
+    console.log(blocks) // {id: 'a5d16cf9-3148-476c-a302-c745ca32465a', user_id: '03a40268-63b7-4b2b-9703-b02d56ead1f2', day: '2025-10-12', start: '11:00:00', finish: '23:00:00', …}
 
     setSyncBlocks(blocks);
   } catch (err: any) {
@@ -391,7 +386,6 @@ const syncMany = async (friendsId: string[]) => {
         logout,
         loadFriends,          
         loadPendingFriendRequests,
-        sync1to1,
         syncMany
       }}
     >

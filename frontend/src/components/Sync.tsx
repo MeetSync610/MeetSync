@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../styles/Sync.css";
 import "../styles/PersonPickItem.css";
 import { Link } from "react-router-dom";
@@ -13,13 +13,8 @@ export default function Sync() {
   const {
     friends,
     syncBlocks,
-    sync1to1,
     syncMany,
   } = useAuthContext();
-
-  useEffect(() => {
-    console.log(syncBlocks);
-  }, [syncBlocks]);
 
   const handleSyncMany = (userId: string) => {
     const newToSync = toSyncMany.includes(userId)
@@ -46,7 +41,7 @@ export default function Sync() {
               <div className="sync__list">
                 {friends.map((frn, i) => (
                   <label className="ppick" key={i + "l"}>
-                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync1to1(frn.id); setShow(true) }} key={i + "i"}/>
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { syncMany([frn.id]); setShow(true) }} key={i + "i"}/>
                     <div className="ppick__avatar" key={i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
@@ -78,7 +73,7 @@ export default function Sync() {
           </Link>
         </div>
       </div>
-      {show && (<Schedule></Schedule>)}
+      {show && (<Schedule syncBlocks={syncBlocks}></Schedule>)}
     </section>
   );
 }
