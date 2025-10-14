@@ -13,6 +13,7 @@ export default function Sync() {
   const {
     friends,
     syncBlocks,
+    sync,
     syncMany,
   } = useAuthContext();
 
@@ -22,8 +23,10 @@ export default function Sync() {
       : [...toSyncMany, userId];
 
     setToSyncMany(newToSync);
-    syncMany(newToSync); // Usamos la copia actualizada
-    setShow(true);
+    if (newToSync[0]) {
+      syncMany(newToSync); // Usamos la copia actualizada
+      setShow(true);
+    }
   };
 
   return (
@@ -41,7 +44,7 @@ export default function Sync() {
               <div className="sync__list">
                 {friends.map((frn, i) => (
                   <label className="ppick" key={i + "l"}>
-                    <input type="radio" name="1to1" value={frn.id} onChange={() => { syncMany([frn.id]); setShow(true) }} key={i + "i"}/>
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync(frn.id); setShow(true) }} key={i + "i"}/>
                     <div className="ppick__avatar" key={i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
