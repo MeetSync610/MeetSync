@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [syncBlocks, setSyncBlocks] = useState<Block[]>([]);
 
+  let auxBlocks: Block[] = []
+
   // ------------------- Inicialización -------------------
   useEffect(() => {
     const init = async () => {
@@ -314,15 +316,13 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 
 
-  const sync = async (id2: string) => {
+  const sync = async (id2: string, many: boolean = false) => {
   if (!session) return;
   try {
     const id1 = session.user.id;
     const { data, error } = await supabase.rpc('sync', { id1, id2 });
 
     if (error) throw error;
-    if (!data[0]) setSyncBlocks([{id: 0, day: "0", start: "00:00", finish: "00:00", summary: "", color: "#f87171"}]);
-
     // Aquí convertimos manualmente los datos a Block[]
     const blocks: Block[] = (data || []).map((b: any) => ({
       id: b.id,
@@ -334,7 +334,8 @@ export const AuthProvider = ({ children }: { children: any }) => {
       googleId: b.google_event_id || undefined,
     }));
 
-    setSyncBlocks(blocks);
+    if(many) auxBlocks = blocks;
+    else setSyncBlocks(blocks);
   } catch (err: any) {
     console.error("Error al sincronizar 1 a 1:", err.message);
     setSyncBlocks([]);
@@ -346,43 +347,25 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 const syncMany = async (ids: string[]) => {
   if (!session) return;
+  await sync(ids[0], true);
 
-    sync(ids[0]);
-
-    if (ids.length > 1) {
-      ids.shift();
-
-      const blocks = (syncBlocks || []).map((b: any) => ({
-        id: b.id,
-        day: b.day,
-        start: b.start,
-        finish: b.finish, 
-        summary: b.summary,
-        color: b.color,
-        googleId: b.google_event_id || undefined,
-      }));
-
-      console.log(blocks);
-
-      ids.map(id => {
-        handleSyncMany(id);
-      })
-      if (!syncBlocks[0]) setSyncBlocks([{id: 0, day: "0", start: "00:00", finish: "00:00", summary: "", color: "#f87171"}]);
+  if (ids.length > 1) {
+    for (const [i, id] of ids.entries()) {
+      if (i != 0) await handleSyncMany(id);
     }
-    
-    const blocks: Block[] = (syncBlocks || []).map((b: any) => ({
-      id: b.id,
-      day: b.day,
-      start: b.start,
-      finish: b.finish, 
-      summary: b.summary,
-      color: b.color,
-      googleId: b.google_event_id || undefined,
-    }));
+  }
 
-    console.log("Bloques procesados:", blocks);
-    
-    setSyncBlocks(blocks);
+  const blocks: Block[] = (auxBlocks || []).map((b: any) => ({
+    id: b.id,
+    day: b.day,
+    start: b.start,
+    finish: b.finish, 
+    summary: b.summary,
+    color: b.color,
+    googleId: b.google_event_id || undefined,
+  }));
+
+  setSyncBlocks(blocks);
 };
 
 
@@ -390,9 +373,9 @@ const syncMany = async (ids: string[]) => {
 
 const handleSyncMany = async (id: string) => {
   try {
-    const { data, error } = await supabase.rpc('sync_many', { p_blocks: syncBlocks, p_user_id: id });
+    const { data, error } = await supabase.rpc('sync_many', { p_blocks: auxBlocks, p_user_id: id });
     if (error) throw error;
-    setSyncBlocks(data);
+    auxBlocks = data;
   } catch (err: any) {
     console.error("Error al sincronizar varios:", err.message);
     setSyncBlocks([]);

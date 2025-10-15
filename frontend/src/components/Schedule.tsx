@@ -51,7 +51,7 @@ export default function Schedule({ syncBlocks }: Props) {
       console.log("Bloques desde localStorage:", JSON.parse(savedBlocks));
     }
   }
-}, [syncBlocks?.length]);
+}, [syncBlocks]);
 
 
   useEffect(() => {
