@@ -75,8 +75,8 @@ export default function Sync() {
             <CalendarIcon size={16} /> Volver a tu horario
           </Link>
         </div>
+        {show && (<Schedule syncBlocks={syncBlocks}></Schedule>)}
       </div>
-      {show && (<Schedule syncBlocks={syncBlocks}></Schedule>)}
     </section>
   );
 }

@@ -1,5 +1,5 @@
 .sync { color: var(--text); }
-.sync .container { max-width: 900px; padding-block: 2.2rem; }
+.sync .container { max-width: 1100px; padding-block: 2.2rem; }
 
 .sync__card {
   border-radius: 1rem; border: 1px solid rgba(51,65,85,.6);
