@@ -31,8 +31,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   loadFriends: (userId: string) => Promise<void>;           
   loadPendingFriendRequests: (userId: string) => Promise<void>;
-  sync: (id2: string) => Promise<void>;
-  syncMany: (ids: string[]) => Promise<void>;
+  sync: (friendsIds: string[]) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,8 +43,6 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [pendingFriendRequests, setPendingFriendRequests] = useState<FriendRequest[]>([]);
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [syncBlocks, setSyncBlocks] = useState<Block[]>([]);
-
-  let auxBlocks: Block[] = []
 
   // ------------------- Inicialización -------------------
   useEffect(() => {
@@ -316,11 +313,11 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
 
 
-  const sync = async (id2: string, many: boolean = false) => {
+  const sync = async (friendsIds: string[]) => {
   if (!session) return;
   try {
-    const id1 = session.user.id;
-    const { data, error } = await supabase.rpc('sync', { id1, id2 });
+    const ids = [session.user.id, ...friendsIds]
+    const { data, error } = await supabase.rpc('sync', { ids });
 
     if (error) throw error;
     // Aquí convertimos manualmente los datos a Block[]
@@ -334,53 +331,12 @@ export const AuthProvider = ({ children }: { children: any }) => {
       googleId: b.google_event_id || undefined,
     }));
 
-    if(many) auxBlocks = blocks;
-    else setSyncBlocks(blocks);
+    setSyncBlocks(blocks);
   } catch (err: any) {
     console.error("Error al sincronizar 1 a 1:", err.message);
     setSyncBlocks([]);
   }
 };
-
-
-
-
-const syncMany = async (ids: string[]) => {
-  if (!session) return;
-  await sync(ids[0], true);
-
-  if (ids.length > 1) {
-    for (const [i, id] of ids.entries()) {
-      if (i != 0) await handleSyncMany(id);
-    }
-  }
-
-  const blocks: Block[] = (auxBlocks || []).map((b: any) => ({
-    id: b.id,
-    day: b.day,
-    start: b.start,
-    finish: b.finish, 
-    summary: b.summary,
-    color: b.color,
-    googleId: b.google_event_id || undefined,
-  }));
-
-  setSyncBlocks(blocks);
-};
-
-
-
-
-const handleSyncMany = async (id: string) => {
-  try {
-    const { data, error } = await supabase.rpc('sync_many', { p_blocks: auxBlocks, p_user_id: id });
-    if (error) throw error;
-    auxBlocks = data;
-  } catch (err: any) {
-    console.error("Error al sincronizar varios:", err.message);
-    setSyncBlocks([]);
-  }
-}
 
 
 
@@ -404,7 +360,6 @@ const handleSyncMany = async (id: string) => {
         loadFriends,          
         loadPendingFriendRequests,
         sync,
-        syncMany
       }}
     >
       {children}

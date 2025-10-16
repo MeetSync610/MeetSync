@@ -8,23 +8,22 @@ import { useAuthContext } from "../contexts/AuthContext";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function Sync() {
-  const [toSyncMany, setToSyncMany] = useState<string[]>([]);
   const [show, setShow] = useState<boolean>(false);
   const {
     friends,
     syncBlocks,
     sync,
-    syncMany,
   } = useAuthContext();
 
+  let toSyncMany: string[] = []
+
   const handleSyncMany = (userId: string) => {
-    const newToSync = toSyncMany.includes(userId)
+    toSyncMany = toSyncMany.includes(userId)
       ? toSyncMany.filter((e) => e !== userId)
       : [...toSyncMany, userId];
 
-    setToSyncMany(newToSync);
-    if (newToSync[0]) {
-      syncMany(newToSync); // Usamos la copia actualizada
+    if (toSyncMany[0]) {
+      sync(toSyncMany); // Usamos la copia actualizada
       setShow(true);
     }
   };
@@ -44,7 +43,7 @@ export default function Sync() {
               <div className="sync__list">
                 {friends.map((frn, i) => (
                   <label className="ppick" key={i + "l"}>
-                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync(frn.id); setShow(true) }} key={i + "i"}/>
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync([frn.id]); setShow(true) }} key={i + "i"}/>
                     <div className="ppick__avatar" key={i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
