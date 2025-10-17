@@ -9,21 +9,21 @@ import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function Sync() {
   const [show, setShow] = useState<boolean>(false);
+  const [toSyncMany, setToSyncMany] = useState<string[]>([]);
   const {
     friends,
     syncBlocks,
     sync,
   } = useAuthContext();
 
-  let toSyncMany: string[] = []
-
   const handleSyncMany = (userId: string) => {
-    toSyncMany = toSyncMany.includes(userId)
+    const newToSync = toSyncMany.includes(userId)
       ? toSyncMany.filter((e) => e !== userId)
       : [...toSyncMany, userId];
 
-    if (toSyncMany[0]) {
-      sync(toSyncMany); // Usamos la copia actualizada
+    setToSyncMany(newToSync);
+    if (newToSync[0]) {
+      sync(newToSync); // Usamos la copia actualizada
       setShow(true);
     }
   };
