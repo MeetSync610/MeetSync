@@ -11,6 +11,8 @@ export default function Login() {
   const { login } = useAuthContext(); // <- Función de login del contexto
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  
 
   // Validación de contraseña
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
@@ -26,16 +28,19 @@ export default function Login() {
   // ------------------- Handle Submit -------------------
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(""); // limpiar error anterior
+
     if (!canSubmit) return;
 
     try {
-      await login(email, password); // <- Usamos la función del contexto
-      navigate("/"); // Redirigir a home después de login
+      await login(email, password); // si es válido
+      navigate("/"); // redirige al home
     } catch (err: any) {
       console.error("Error al iniciar sesión:", err.message);
-      alert("Error al iniciar sesión: " + err.message);
+      setError("Email o contraseña incorrectos. Intentalo de nuevo."); // muestra mensaje y NO redirige
     }
   };
+
 
   return (
     <section className="login">
@@ -73,6 +78,7 @@ export default function Login() {
           <button className="btn-primary login__submit" type="submit" disabled={!canSubmit}>
             <LucideLogIn size={18} /> Entrar
           </button>
+          {error && <p className="login__error">{error}</p>}
         </form>
       </AuthCard>
     </section>

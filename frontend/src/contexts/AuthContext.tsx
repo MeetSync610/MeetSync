@@ -165,16 +165,20 @@ export const AuthProvider = ({ children }: { children: any }) => {
         email: email.trim().toLowerCase(),
         password,
       });
+
       if (loginError) throw loginError;
 
       setSession(loginData.session);
       const userId = loginData.user?.id;
       if (userId) await loadUserData(userId);
+
     } catch (err: any) {
       console.error("Error al iniciar sesión:", err.message);
-      alert("Error al iniciar sesión: " + err.message);
+      throw err;
     }
   };
+
+
 
   const logout = async () => {
     await supabase.auth.signOut();
