@@ -337,7 +337,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
 
     setSyncBlocks(blocks);
   } catch (err: any) {
-    console.error("Error al sincronizar 1 a 1:", err.message);
+    console.error("Error al sincronizar:", err.message);
     setSyncBlocks([]);
   }
 };

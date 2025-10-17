@@ -10,6 +10,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 export default function Sync() {
   const [show, setShow] = useState<boolean>(false);
   const [toSyncMany, setToSyncMany] = useState<string[]>([]);
+  const [toSync, setToSync] = useState<string>();
   const {
     friends,
     syncBlocks,
@@ -25,7 +26,8 @@ export default function Sync() {
     if (newToSync[0]) {
       sync(newToSync); // Usamos la copia actualizada
       setShow(true);
-    }
+    } else if(toSync) sync([toSync]);
+    else setShow(false);
   };
 
   return (
@@ -43,7 +45,7 @@ export default function Sync() {
               <div className="sync__list">
                 {friends.map((frn, i) => (
                   <label className="ppick" key={i + "l"}>
-                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync([frn.id]); setShow(true) }} key={i + "i"}/>
+                    <input type="radio" name="1to1" value={frn.id} onChange={() => { sync([frn.id]); setToSync(frn.id); setShow(true) }} key={i + "i"}/>
                     <div className="ppick__avatar" key={i + "d"}/>
                     <span className="ppick__name">{frn.name}</span>
                   </label>
