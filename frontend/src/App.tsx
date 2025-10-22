@@ -32,7 +32,6 @@ export default function App() {
           <Route path="/sync" element={<Sync />} />
           <Route path="/terminos" element={<Terms />} />
           <Route path="/privacidad" element={<Privacy />} />
-          {/* <Route path="/soporte" element={<Support />}/> */}
         </Route>
 
         <Route element={<AuthLayout />}>
