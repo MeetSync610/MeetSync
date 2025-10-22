@@ -44,19 +44,8 @@ export default function Schedule({ syncBlocks }: Props) {
   if (syncBlocks?.length) {
     setBlocks(syncBlocks);
     console.log("Bloques sincronizados:", syncBlocks);
-  } else {
-    const savedBlocks = localStorage.getItem("blocks");
-    if (savedBlocks) {
-      setBlocks(JSON.parse(savedBlocks));
-      console.log("Bloques desde localStorage:", JSON.parse(savedBlocks));
-    }
   }
 }, [syncBlocks]);
-
-
-  useEffect(() => {
-    if (!syncBlocks) localStorage.setItem("blocks", JSON.stringify(blocks));
-  }, [blocks]);
 
   // -------------------- MERGE SIN DUPLICADOS --------------------
   const normalizeTime = (t: string) => t.slice(0, 5);
