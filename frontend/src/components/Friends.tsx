@@ -6,6 +6,7 @@ import FriendCard from "./FriendCard";
 import FriendStatusCard from "./FriendStatusCard";
 import { useAuthContext } from "../contexts/AuthContext";
 import { supabase } from "../supabaseClient"; // asegúrate de importar Supabase aquí
+import { Users, UserPen } from "lucide-react";
 
 export default function Friends() {
   const { 
@@ -170,7 +171,7 @@ export default function Friends() {
         )}
 
         {/* ---------- Solicitudes pendientes ---------- */}
-        <h3 className="profile__title">Solicitudes de amistad</h3>
+        <h3 className="profile__title"> <UserPen className="icon-sky"/> Solicitudes de amistad</h3>
         {pendingFriendRequests.filter(r => r.receiver_id === userProfile?.id).length > 0 ? (
           pendingFriendRequests
             .filter(r => r.receiver_id === userProfile?.id)
@@ -194,7 +195,7 @@ export default function Friends() {
         )}
 
         {/* ---------- Amigos ---------- */}
-        <h3 className="profile__title">Tus amigos</h3>
+        <h3 className="profile__title"> <Users className="icon-sky"/> Tus amigos</h3>
         <div className="profile__friends">
           {friends.length > 0 ? (
             friends.map(friend => (

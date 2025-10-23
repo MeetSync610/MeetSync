@@ -9,7 +9,7 @@ type Props = {
 export default function PageHeader({ title, right }: Props) {
   return (
     <div className="pagehdr">
-      <h1> <UserSearchIcon/> {title}</h1>
+      <h1> <UserSearchIcon className="icon-sky"/> {title}</h1>
       <div className="pagehdr__right">{right}</div>
     </div>
   );

@@ -1,4 +1,5 @@
 import "../styles/FriendStatusCard.css";
+import { UserMinus } from "lucide-react";
 //import { useAuthContext } from "../contexts/AuthContext";
 
 type Props = {
@@ -24,7 +25,7 @@ export default function FriendStatusCard({name, status, removable, removeHandler
 
       {removable && (
         <button className="btn-ghost" onClick={removeHandler}>
-          Eliminar
+          <UserMinus/>
         </button>
       )}
 
