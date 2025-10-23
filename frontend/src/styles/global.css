@@ -252,3 +252,35 @@ body.light .faq__summary:hover {
   transition: transform 0.15s, box-shadow 0.2s, background 0.15s;
 }
 
+/* === FIX GLOBAL DE HOVER PARA LINKS DE TEXTO (NAV, FOOTER, ETC) === */
+
+/* Quitar sombra en hover para links simples (no botones) */
+.nav-header a:hover,
+footer a:hover,
+.footer a:hover,
+.nav a:hover,
+a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-theme):hover {
+  box-shadow: none !important;
+  transform: none !important;
+  background: transparent !important;
+}
+
+/* Quitar efecto también en modo claro */
+body.light .nav-header a:hover,
+body.light footer a:hover,
+body.light .footer a:hover,
+body.light .nav a:hover,
+body.light a:not(.btn-primary):not(.btn-secondary):not(.btn-outline):not(.btn-theme):hover {
+  box-shadow: none !important;
+  transform: none !important;
+  background: transparent !important;
+}
+
+/* Opcional: hacer hover más sutil (subrayado suave) */
+.nav-header a:hover,
+footer a:hover,
+.nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.8;
+}
