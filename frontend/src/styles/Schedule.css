@@ -1,11 +1,11 @@
-.schedule { color: var(--text); overflow-x: hidden;}
+.schedule { color: var(--text); overflow-x: hidden; }
 .schedule .container { max-width: 1100px; padding-block: 2.2rem; }
 
 .schedule__head {
-  display:flex; align-items:center; justify-content:space-between;
-  gap:.75rem; margin-bottom:1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .75rem; margin-bottom: 1rem;
 }
-.schedule__head h1 { margin:0; font-size:1.1rem; font-weight:600; }
+.schedule__head h1 { margin: 0; font-size: 1.1rem; font-weight: 600; }
 
 .card-like {
   border-radius: 1rem; border: 1px solid rgba(51,65,85,.6);
@@ -14,54 +14,32 @@
 }
 
 .schedule__toolbar {
-  display:flex; align-items:center; justify-content:space-between; gap:.75rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
   margin-bottom: .8rem;
 }
 .schedule__weeklabel { color: var(--text); }
-.schedule__actions { display:flex; gap:.6rem; flex-wrap:wrap; }
+.schedule__actions { display: flex; gap: .6rem; flex-wrap: wrap; }
 
 .btn-outline {
-  display:inline-flex; align-items:center; gap:.5rem;
-  padding:.55rem .9rem; border-radius:.8rem;
-  border:1px solid #334155; background:transparent; color: var(--text);
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem .9rem; border-radius: .8rem;
+  border: 1px solid #334155; background: transparent; color: var(--text);
 }
 
-.schedule__hint { color: var(--text); font-size:.8rem; margin:.7rem 0 0; }
-
-.schedule__cta { margin-top:1rem; }
+.schedule__hint { color: var(--text); font-size: .8rem; margin: .7rem 0 0; }
+.schedule__cta { margin-top: 1rem; }
 
 .overlay {
   position: fixed;
   inset: 0;
   backdrop-filter: blur(6px);
-  background: var(--bg);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  display: none;
-}
-.setBlock {
-  background: var(--bg);
-  position: absolute;
-  border-radius: .8rem;
-  padding: 2rem;
-  text-align: center;
-}
-
-
-/* Overlay general */
-.overlay {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(6px);
-  background: rgba(51,65,85,0.4); /* semi-transparente para destacar el modal */
-  display: flex; /* se activa al mostrar */
+  background: rgba(51,65,85,0.4);
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
-/* Contenedor del formulario */
 .setBlock {
   background: var(--bg);
   border-radius: 1rem;
@@ -75,7 +53,6 @@
   text-align: left;
 }
 
-/* Labels */
 .setBlock label {
   font-weight: 500;
   font-size: 0.85rem;
@@ -84,7 +61,6 @@
   margin-bottom: 0.25rem;
 }
 
-/* Inputs */
 .setBlock input[type="text"],
 .setBlock input[type="date"],
 .setBlock input[type="time"],
@@ -98,13 +74,11 @@
   font-size: 0.85rem;
 }
 
-/* Inputs de color más compactos */
 .setBlock input[type="color"] {
   padding: 0;
   height: 2rem;
 }
 
-/* Botones del modal */
 .setBlock button {
   padding: 0.55rem 0.9rem;
   border-radius: 0.7rem;
@@ -113,8 +87,15 @@
   color: var(--text);
   font-weight: 500;
   cursor: pointer;
-  margin-top: 0.5rem;
   transition: background 0.2s, color 0.2s;
+  min-width: 140px;
+  text-align: center;
+  display: inline-flex;
+  justify-content: center;
+   width: 100%;     /* Fuerza el mismo ancho de extremo a extremo */
+  padding: 0.7rem 1rem;
+  box-sizing: border-box;  /* Asegura que padding no rompa el ancho */
+  text-align: center;
 }
 
 .setBlock button:hover {
@@ -122,15 +103,14 @@
   color: #fff;
 }
 
-/* Botón aceptar y cancelar separados */
 .setBlock button:first-of-type {
   margin-right: 0.5rem;
 }
-/* --------------------------------------------------------- NO ANDA --------------------------------------------------------- */
-/* Bloques del calendario profesionales */
+
+/* Bloques del calendario */
 .block {
   display: inline-block;
-  border-radius: 1rem;              /* bordes bien curvos */
+  border-radius: 1rem;
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
   font-weight: 500;
@@ -143,21 +123,18 @@
   cursor: default;
 }
 
-/* Hover suave para interactividad */
 .block:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.18);
   filter: brightness(1.05);
 }
 
-/* Colores degradados suaves */
 .block-blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
 .block-red { background: linear-gradient(135deg, #ef4444, #f87171); }
 .block-green { background: linear-gradient(135deg, #10b981, #34d399); }
 .block-yellow { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
 .block-gray { background: linear-gradient(135deg, #6b7280, #9ca3af); }
 
-/* Opcional: sombra interna sutil para dar relieve */
 .block::before {
   content: "";
   display: block;
