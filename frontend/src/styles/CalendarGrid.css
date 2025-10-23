@@ -3,11 +3,11 @@
   display: grid;
   grid-template-columns: 56px repeat(7, minmax(0, 1fr)); /* hora + 7 días, fluidas */
   grid-auto-rows: 56px;
-  background: linear-gradient(rgba(2, 6, 23, .4) 30%, darkblue 60%, rgba(2, 6, 23, .4));
   height: 50vh;
   overflow-y: auto;
   background-attachment: local;
   width: 100%;
+  background: var(--bg);
 }
 
 /* Reglas compartidas */
