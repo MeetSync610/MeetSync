@@ -284,3 +284,15 @@ footer a:hover,
   text-underline-offset: 3px;
   opacity: 0.8;
 }
+/* Cambiar color del icono del input date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(72%) sepia(68%) saturate(2968%) hue-rotate(159deg) brightness(96%) contrast(90%);
+  /* Esto te transforma el icono al celeste tipo .icon-sky (#38bdf8) */
+  cursor: pointer;
+}
+
+/* Cambiar color del icono del input time */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(72%) sepia(68%) saturate(2968%) hue-rotate(159deg) brightness(96%) contrast(90%);
+  cursor: pointer;
+}
