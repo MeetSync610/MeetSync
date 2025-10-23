@@ -1,35 +1,67 @@
+// src/components/CalendarGridMonth.tsx
 import "../styles/CalendarGrid.css";
 import type { Block } from "../types";
+import { getTextColorForBackground } from "../utils/colorUtils";
 
 type Props = {
   blocks?: Block[];
   currentDate: Date;
 };
 
-export default function CalendarGridMonth({ blocks=[], currentDate }: Props) {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  const today = new Date();
+const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-  const lastDay = new Date(year, month + 1, 0);
-  const totalDays = lastDay.getDate();
-  const days = Array.from({ length: totalDays }, (_, i) => i + 1);
+export default function CalendarGridMonth({ blocks = [], currentDate }: Props) {
+  const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const startDay = startOfMonth.getDay();
+  const daysInMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0
+  ).getDate();
+
+  const cells = Array.from({ length: startDay + daysInMonth }, (_, i) => {
+    const dayNumber = i - startDay + 1;
+    if (dayNumber < 1) return null;
+
+    const dateString = `${currentDate.getFullYear()}-${String(
+      currentDate.getMonth() + 1
+    ).padStart(2, "0")}-${String(dayNumber).padStart(2, "0")}`;
+
+    const blocksHere = blocks.filter((b) => b.day === dateString);
+
+    return { dayNumber, blocksHere };
+  });
 
   return (
     <div className="calendar-month">
-      {days.map(day => {
-        const dateStr = `${year}-${(month+1).toString().padStart(2,"0")}-${day.toString().padStart(2,"0")}`;
-        const blocksOfDay = blocks.filter(b => b.day === dateStr);
-        const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+      {DAYS.map((d) => (
+        <div key={d} className="calendar__day">
+          {d}
+        </div>
+      ))}
+      {cells.map((cell, index) => {
+        if (!cell) return <div key={index} className="calendar__cell"></div>;
 
         return (
-          <div key={day} className={`calendar__cell ${isToday ? "today" : ""}`} style={{position:"relative"}}>
-            <div className="calendar__day-number">{day}</div>
-            {blocksOfDay.map((b,i) => (
-              <div key={i} style={{backgroundColor:b.color, margin:"2px", padding:"2px", borderRadius:"2px"}}>
-                {b.summary}
-              </div>
-            ))}
+          <div key={index} className="calendar__cell">
+            <div className="calendar-month-day-number">{cell.dayNumber}</div>
+
+            {cell.blocksHere.map((b, idx) => {
+              const textColor = getTextColorForBackground(b.color);
+              return (
+                <div
+                  key={idx}
+                  className="block-label"
+                  style={{
+                    backgroundColor: b.color,
+                    color: textColor,
+                    borderRadius: "8px",
+                  }}
+                >
+                  {b.summary}
+                </div>
+              );
+            })}
           </div>
         );
       })}
