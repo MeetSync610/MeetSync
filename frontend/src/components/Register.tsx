@@ -1,177 +1,134 @@
-import "../styles/Register.css";
-import { Link, useNavigate } from "react-router-dom";
-import { UserPlus } from "lucide-react";
-import AuthCard from "./AuthCard";
-import FormField from "./FormField";
+import "../styles/Registro-Logeo.css"; 
+import { Link } from "react-router-dom";
+import { User, AtSign, Mail, Lock } from "lucide-react";
 import { useMemo, useState } from "react";
-import { supabase } from "../supabaseClient";
 
-export default function Register() {
-  const navigate = useNavigate();
-
+export default function Register2() {
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); // solo front por ahora
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
 
+  // Validaciones livianas para habilitar el botón (sin mostrar errores aún)
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
 
-  const usernameError = useMemo(() => {
-    if (!username) return undefined;
-    if (!usernameRegex.test(username))
-      return "Usá 3–20 caracteres: letras, números o _ (guión bajo).";
-    return undefined;
-  }, [username]);
-
-  const passwordError = useMemo(() => {
-    if (!password) return undefined;
-    if (!passRegex.test(password))
-      return "Mínimo 6 caracteres, al menos una letra y un número.";
-    return undefined;
-  }, [password]);
-
-  const confirmError = useMemo(() => {
-    if (!confirm) return undefined;
-    if (password !== confirm) return "Las contraseñas no coinciden.";
-    return undefined;
-  }, [password, confirm]);
+  const usernameOk = useMemo(() => !username || usernameRegex.test(username), [username]);
+  const passwordOk = useMemo(() => !password || passRegex.test(password), [password]);
 
   const canSubmit =
     name.trim().length > 0 &&
+    username.trim().length > 0 &&
     email.trim().length > 0 &&
-    username &&
-    !usernameError &&
-    password &&
-    !passwordError &&
-    confirm &&
-    !confirmError;
+    password.trim().length > 0 &&
+    usernameOk &&
+    passwordOk;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!canSubmit) return;
-
-  try {
-    const {error } = await supabase.auth.signUp({
-      email: email.trim().toLowerCase(),
-      password,
-    });
-
-    if (error) {
-      console.error("Supabase signup error:", error);
-      alert("Error al registrarse: " + error.message);
-      return;
-    }
-
-    // Iniciar sesión automáticamente
-    const { error: loginError } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
-
-    if (loginError) {
-      alert("Error al iniciar sesión: " + loginError.message);
-      return;
-    }
-
-    alert("✅ Registro exitoso! Ahora podés iniciar sesión.");
-    navigate("/login");
-
-  } catch (err) {
-    console.error(err);
-    alert("Ocurrió un error inesperado");
-  }
-};
-
-
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    // 👉 sin backend por ahora. Después enchufamos supabase/tu API.
+    console.log("Register2 submit:", { name, username, email });
+  };
 
   return (
-    <section className="register">
-      <AuthCard
-        title="Crear cuenta"
-        footer={
-          <span>
-            ¿Ya tenés cuenta?{" "}
-            <Link to="/login" className="link">
-              Entrar
-            </Link>
-          </span>
-        }
-      >
-        <form className="register__form" onSubmit={handleSubmit} noValidate>
-          <FormField
-            id="name"
-            label="Nombre"
-            type="text"
-            placeholder="Fulano"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <FormField
-            id="username"
-            label="Nombre de usuario"
-            type="text"
-            placeholder="fulano_123"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            error={usernameError}
-          />
-          <FormField
-            id="email"
-            label="Email"
-            type="email"
-            placeholder="tu@mail.com"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <FormField
-            id="password"
-            label="Contraseña"
-            type="password"
-            required
-            minLength={6}
-            pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}"
-            title="Mínimo 6 caracteres, al menos una letra y un número."
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={passwordError}
-          />
-          <FormField
-            id="confirm"
-            label="Repetir contraseña"
-            type="password"
-            required
-            placeholder="••••••••"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            error={confirmError}
-          />
+    <section className="login2">{/* reuso layout/clases */}
+      {/* Fondo video + overlay (misma ruta que en Login2) */}
+      <video
+        className="bg-video"
+        src="/fondo4k.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+      />
+      <div className="bg-overlay" />
 
-          <div className="register__terms">
-            Al crear tu cuenta aceptás nuestros{" "}
-            <Link to="/terminos" className="link">
-              Términos de servicio
-            </Link>{" "}
-            y{" "}
-            <Link to="/privacidad" className="link">
-              Política de privacidad
-            </Link>.
+      <div className="login-container login-container--tall">
+        <form onSubmit={handleSubmit} noValidate>
+          <h2>Register</h2>
+
+          {/* Nombre */}
+          <div className="input-box">
+            <User className="icon" size={20} />
+            <input
+              id="name"
+              type="text"
+              required
+              placeholder=" "
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+            />
+            <label htmlFor="name">Name</label>
+            <div className="input-line"></div>
           </div>
 
-          <button
-            className="btn-primary register__submit"
-            type="submit"
-            disabled={!canSubmit}
-          >
-            <UserPlus size={18} /> Crear cuenta
+          {/* Nombre de usuario */}
+          <div className="input-box">
+            <AtSign className="icon" size={20} />
+            <input
+              id="username"
+              type="text"
+              required
+              placeholder=" "
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
+              pattern="^[a-zA-Z0-9_]{3,20}$"
+              title="Usá 3–20 caracteres: letras, números o _"
+            />
+            <label htmlFor="username">Username</label>
+            <div className="input-line"></div>
+          </div>
+
+          {/* Email */}
+          <div className="input-box">
+            <Mail className="icon" size={20} />
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+            <label htmlFor="email">Email</label>
+            <div className="input-line"></div>
+          </div>
+
+          {/* Password */}
+          <div className="input-box">
+            <Lock className="icon" size={20} />
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              minLength={6}
+              pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}"
+              title="Mínimo 6 caracteres, al menos una letra y un número."
+            />
+            <label htmlFor="password">Password</label>
+            <div className="input-line"></div>
+          </div>
+
+          <button type="submit" disabled={!canSubmit}>
+            Create account
           </button>
+
+          <div className="register-link" style={{ marginTop: 16 }}>
+            <p>
+              Already have an account? <Link to="/login">Login</Link>
+            </p>
+          </div>
         </form>
-      </AuthCard>
+      </div>
     </section>
   );
 }

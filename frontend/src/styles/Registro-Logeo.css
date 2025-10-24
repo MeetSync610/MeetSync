@@ -207,3 +207,14 @@ button:hover{
 .login-light{
   display: none !important;
 }
+
+/* Altura base (login) */
+.login-container{
+  height: auto;      /* se adapta al contenido */
+  min-height: 450px; /* altura similar a login */
+}
+
+/* Solo register: un poquito más alto */
+.login-container--tall{
+  min-height: 560px; /* ajustá el número si querés más/menos */
+}

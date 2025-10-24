@@ -3,8 +3,6 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
 import Friends from "./components/Friends";
-// import Login from "./components/Login";
-import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Schedule from "./components/Schedule";
 import Sync from "./components/Sync";
@@ -13,7 +11,8 @@ import Privacy from "./components/Privacy";
 import Support from "./components/Support";
 import LandingLayout from "./components/LandingLayout";
 import HomeLanding from "./components/HomeLanding";
-import Login2 from "./components/Login2";
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 const clientId = "486920096908-t2lfjpqr80vsr4qagde2m31uc9lm6r9e.apps.googleusercontent.com";
 
@@ -36,7 +35,7 @@ export default function App() {
         </Route>
 
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login2 />} /> 
+          <Route path="/login" element={<Login />} /> 
           <Route path="/soporte" element={<Support/> } />
           <Route path="/register" element={<Register />} />
         </Route>
