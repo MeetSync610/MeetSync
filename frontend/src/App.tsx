@@ -13,6 +13,7 @@ import Privacy from "./components/Privacy";
 import Support from "./components/Support";
 import LandingLayout from "./components/LandingLayout";
 import HomeLanding from "./components/HomeLanding";
+import Login2 from "./components/Login2";
 
 const clientId = "486920096908-t2lfjpqr80vsr4qagde2m31uc9lm6r9e.apps.googleusercontent.com";
 
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/login" element={<Login />} /> 
           <Route path="/soporte" element={<Support/> } />
           <Route path="/register" element={<Register />} />
+          <Route path="/login2" element={<Login2 />} />
         </Route>
       </Routes>
     </GoogleOAuthProvider>
