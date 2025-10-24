@@ -3,7 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Layout from "./components/Layout";
 import AuthLayout from "./components/AuthLayout";
 import Friends from "./components/Friends";
-import Login from "./components/Login";
+// import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Schedule from "./components/Schedule";
@@ -36,10 +36,9 @@ export default function App() {
         </Route>
 
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} /> 
+          <Route path="/login" element={<Login2 />} /> 
           <Route path="/soporte" element={<Support/> } />
           <Route path="/register" element={<Register />} />
-          <Route path="/login2" element={<Login2 />} />
         </Route>
       </Routes>
     </GoogleOAuthProvider>
