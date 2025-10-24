@@ -61,7 +61,7 @@ export default function Register2() {
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
             />
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Nombre</label>
             <div className="input-line"></div>
           </div>
 
@@ -79,7 +79,7 @@ export default function Register2() {
               pattern="^[a-zA-Z0-9_]{3,20}$"
               title="Usá 3–20 caracteres: letras, números o _"
             />
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Nombre de usuario</label>
             <div className="input-line"></div>
           </div>
 
@@ -95,7 +95,7 @@ export default function Register2() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Correo</label>
             <div className="input-line"></div>
           </div>
 
@@ -114,17 +114,17 @@ export default function Register2() {
               pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}"
               title="Mínimo 6 caracteres, al menos una letra y un número."
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Contraseña</label>
             <div className="input-line"></div>
           </div>
 
           <button type="submit" disabled={!canSubmit}>
-            Create account
+            Crear cuenta
           </button>
 
           <div className="register-link" style={{ marginTop: 16 }}>
             <p>
-              Already have an account? <Link to="/login">Login</Link>
+              ¿Ya tenés cuenta? <Link to="/login">Logeate</Link>
             </p>
           </div>
         </form>

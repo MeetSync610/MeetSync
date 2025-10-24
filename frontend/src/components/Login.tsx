@@ -68,7 +68,7 @@ export default function Login2() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Correo</label>
             <div className="input-line"></div>
           </div>
 
@@ -88,13 +88,13 @@ export default function Login2() {
               autoComplete="current-password"
               aria-invalid={!!passwordError}
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Contraseña</label>
             <div className="input-line"></div>
           </div>
 
           {/* Solo link a soporte (vos ya lo alineaste a la derecha con .forgot) */}
           <div className="forgot">
-            <Link to="/soporte">Forgot Password?</Link>
+            <Link to="/soporte">¿Olvidaste tu contraseña?</Link>
           </div>
 
           <button type="submit" disabled={!canSubmit}>
@@ -110,7 +110,7 @@ export default function Login2() {
 
           <div className="register-link">
             <p>
-              Don't have an account? <Link to="/register">Register</Link>
+              ¿No tenés cuenta? <Link to="/register">Registrate</Link>
             </p>
           </div>
         </form>
