@@ -1,20 +1,32 @@
-import "../styles/Registro-Logeo.css"; 
-import { Link } from "react-router-dom";
+import "../styles/Registro-Logeo.css";
+import { Link, useNavigate } from "react-router-dom";
 import { User, AtSign, Mail, Lock } from "lucide-react";
 import { useMemo, useState } from "react";
+import { supabase } from "../supabaseClient";
 
-export default function Register2() {
+export default function Register() {
+  const navigate = useNavigate();
+
+  // state
   const [name, setName] = useState("");
-  const [username, setUsername] = useState(""); // solo front por ahora
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  // Validaciones livianas para habilitar el botón (sin mostrar errores aún)
+  // validaciones (mismas reglas que usabas)
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
 
-  const usernameOk = useMemo(() => !username || usernameRegex.test(username), [username]);
-  const passwordOk = useMemo(() => !password || passRegex.test(password), [password]);
+  const usernameOk = useMemo(
+    () => !username || usernameRegex.test(username),
+    [username]
+  );
+  const passwordOk = useMemo(
+    () => !password || passRegex.test(password),
+    [password]
+  );
 
   const canSubmit =
     name.trim().length > 0 &&
@@ -22,18 +34,64 @@ export default function Register2() {
     email.trim().length > 0 &&
     password.trim().length > 0 &&
     usernameOk &&
-    passwordOk;
+    passwordOk &&
+    !submitting;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // submit con supabase (idéntico flujo a tu register anterior)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!canSubmit) return;
-    // 👉 sin backend por ahora. Después enchufamos supabase/tu API.
-    console.log("Register2 submit:", { name, username, email });
+
+    setError("");
+    setSubmitting(true);
+
+    try {
+      // 1) Sign up
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        // opcional: enviar metadatos; si tu backend los usa podés leerlos luego
+        options: {
+          data: {
+            full_name: name.trim(),
+            username: username.trim(),
+          },
+        },
+      });
+
+      if (signUpError) {
+        console.error("Supabase signup error:", signUpError);
+        setError(signUpError.message || "Error al registrarse.");
+        setSubmitting(false);
+        return;
+      }
+
+      // 2) Iniciar sesión automáticamente (como en tu versión previa)
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
+
+      if (loginError) {
+        console.error("Supabase login after signup error:", loginError);
+        setError(loginError.message || "Error al iniciar sesión.");
+        setSubmitting(false);
+        return;
+      }
+
+      // 3) Listo
+      alert("✅ Registro exitoso! Ahora podés iniciar sesión.");
+      navigate("/login");
+    } catch (err: any) {
+      console.error(err);
+      setError("Ocurrió un error inesperado.");
+      setSubmitting(false);
+    }
   };
 
   return (
-    <section className="login2">{/* reuso layout/clases */}
-      {/* Fondo video + overlay (misma ruta que en Login2) */}
+    <section className="login2">
+      {/* Fondo video + overlay */}
       <video
         className="bg-video"
         src="/fondo4k.mp4"
@@ -111,7 +169,7 @@ export default function Register2() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
               minLength={6}
-              pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}"
+              pattern="(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}"
               title="Mínimo 6 caracteres, al menos una letra y un número."
             />
             <label htmlFor="password">Contraseña</label>
@@ -119,8 +177,14 @@ export default function Register2() {
           </div>
 
           <button type="submit" disabled={!canSubmit}>
-            Crear cuenta
+            {submitting ? "Creando..." : "Crear cuenta"}
           </button>
+
+          {error && (
+            <p className="login__error" role="alert" aria-live="polite" style={{ marginTop: 8 }}>
+              {error}
+            </p>
+          )}
 
           <div className="register-link" style={{ marginTop: 16 }}>
             <p>
