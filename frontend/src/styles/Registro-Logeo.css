@@ -80,7 +80,8 @@ h2{
 .input-box{
   position: relative;
   width: 310px;
-  margin: 30px 0;
+  margin: 20px auto; 
+  text-align: left;
 }
 
 /* Línea inferior (glow solo con focus o texto) */
@@ -217,4 +218,60 @@ button:hover{
 /* Solo register: un poquito más alto */
 .login-container--tall{
   min-height: 560px; /* ajustá el número si querés más/menos */
+}
+
+/* --- ESTILOS DE ERROR --- */
+.input-box.error input {
+  border-color: #ff4d4d;
+  box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+  animation: shake 0.2s ease-in-out 0s 2;
+}
+
+.input-box.error .input-line {
+  background: #ff4d4d;
+}
+
+.input-error-text {
+  font-size: 0.8rem;
+  color: #ff6b6b;
+  margin-top: 4px;
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.login__error {
+  color: #ff5f5f;
+  background: rgba(255, 0, 0, 0.1);
+  padding: 10px 15px;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Pequeñas animaciones */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra los campos horizontalmente */
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.input-box.error .icon {
+  color: #ff4d4d;
 }

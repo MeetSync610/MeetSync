@@ -15,9 +15,33 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // validaciones (mismas reglas que usabas)
+  
+  const [touched, setTouched] = useState(false);
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailError = useMemo(() => {
+    if (!email.trim()) return "Ingresá tu correo";
+    if (!emailRegex.test(email)) return "Correo inválido";
+    return undefined;
+  }, [email]);
+
+  const nameError = useMemo(() => {
+    if (!name.trim()) return "Ingresá tu nombre";
+    return undefined;
+  }, [name]);
+
+  const usernameError = useMemo(() => {
+    if (!username.trim()) return "Ingresá tu usuario";
+    if (!usernameRegex.test(username)) return "Usá 3–20 caracteres: letras, números o _";
+    return undefined;
+  }, [username]);
+
+  const passwordError = useMemo(() => {
+    if (!password) return "Ingresá tu contraseña";
+    if (!passRegex.test(password)) return "Mínimo 6 caracteres, al menos una letra y un número.";
+    return undefined;
+  }, [password]);
 
   const usernameOk = useMemo(
     () => !username || usernameRegex.test(username),
@@ -40,6 +64,7 @@ export default function Register() {
   // submit con supabase (idéntico flujo a tu register anterior)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setTouched(true);
     if (!canSubmit) return;
 
     setError("");
@@ -108,7 +133,7 @@ export default function Register() {
           <h2>Register</h2>
 
           {/* Nombre */}
-          <div className="input-box">
+          <div className={`input-box ${touched && nameError ? "error" : ""}`}>
             <User className="icon" size={20} />
             <input
               id="name"
@@ -121,10 +146,14 @@ export default function Register() {
             />
             <label htmlFor="name">Nombre</label>
             <div className="input-line"></div>
+            {touched && nameError && (
+              <span className="input-error-text">{nameError}</span>
+            )}
+
           </div>
 
           {/* Nombre de usuario */}
-          <div className="input-box">
+          <div className={`input-box ${touched && usernameError ? "error" : ""}`}>
             <AtSign className="icon" size={20} />
             <input
               id="username"
@@ -139,10 +168,14 @@ export default function Register() {
             />
             <label htmlFor="username">Nombre de usuario</label>
             <div className="input-line"></div>
+            {touched && usernameError && (
+              <span className="input-error-text">{usernameError}</span>
+            )}
+
           </div>
 
           {/* Email */}
-          <div className="input-box">
+          <div className={`input-box ${touched && emailError ? "error" : ""}`}>
             <Mail className="icon" size={20} />
             <input
               id="email"
@@ -155,10 +188,14 @@ export default function Register() {
             />
             <label htmlFor="email">Correo</label>
             <div className="input-line"></div>
+            {touched && emailError && (
+              <span className="input-error-text">{emailError}</span>
+            )}
+
           </div>
 
           {/* Password */}
-          <div className="input-box">
+          <div className={`input-box ${touched && passwordError ? "error" : ""}`}>
             <Lock className="icon" size={20} />
             <input
               id="password"
@@ -174,9 +211,13 @@ export default function Register() {
             />
             <label htmlFor="password">Contraseña</label>
             <div className="input-line"></div>
+            {touched && passwordError && (
+              <span className="input-error-text">{passwordError}</span>
+            )}
+
           </div>
 
-          <button type="submit" disabled={!canSubmit}>
+          <button type="submit">
             {submitting ? "Creando..." : "Crear cuenta"}
           </button>
 
