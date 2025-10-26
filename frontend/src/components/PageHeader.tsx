@@ -3,7 +3,7 @@ import { UserSearchIcon } from "lucide-react";
 
 type Props = {
   title: string;
-  right?: React.ReactNode; // botones u otro contenido a la derecha
+  right?: React.ReactNode; 
 };
 
 export default function PageHeader({ title, right }: Props) {

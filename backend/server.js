@@ -38,14 +38,14 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: IS_PROD, // only send cookie over HTTPS in production
-      sameSite: IS_PROD ? "none" : "lax", // allow cross-site cookies in prod when frontend and backend are on different origins
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      secure: IS_PROD, 
+      sameSite: IS_PROD ? "none" : "lax", 
+      maxAge: 1000 * 60 * 60 * 24 * 7, 
     },
   })
 );
 
-// helper to create OAuth2 client with correct redirectUri
+
 function makeOauthClient() {
   const redirectUri = IS_PROD
     ? `${BACKEND_URL.replace(/\/$/, "")}/auth/google/callback`
@@ -90,10 +90,10 @@ app.get("/auth/google/callback", async (req, res) => {
   try {
     const oauth2Client = makeOauthClient();
     const { tokens } = await oauth2Client.getToken(code);
-    // store tokens in session
+    // store tokens
     req.session.tokens = tokens;
 
-    // debug log (remove in production)
+  
     console.log("TOKENS saved in session (masked):", {
       expires_at: tokens.expiry_date ? new Date(tokens.expiry_date).toISOString() : null,
       has_refresh_token: !!tokens.refresh_token,
@@ -106,7 +106,7 @@ app.get("/auth/google/callback", async (req, res) => {
   }
 });
 
-// middleware to ensure Google tokens exist and set client for route handlers
+
 function requireAuth(req, res, next) {
   if (!req.session?.tokens) {
     return res.status(401).json({ success: false, message: "Usuario no autenticado con Google" });
@@ -116,9 +116,7 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// -------------------- GOOGLE CALENDAR DIRECT ENDPOINTS (optional) --------------------
-// These endpoints are available if you call /api/calendar/* directly.
-// Many flows in the app call backend /api/blocks which also handles Google sync.
+// -------------------- GOOGLE CALENDAR DIRECT ENDPOINTS --------------------
 app.post("/api/calendar", requireAuth, async (req, res) => {
   try {
     const { day, start, finish, summary } = req.body;

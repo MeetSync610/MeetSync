@@ -24,7 +24,7 @@ export default function Sync() {
 
     setToSyncMany(newToSync);
     if (newToSync[0]) {
-      sync(newToSync); // Usamos la copia actualizada
+      sync(newToSync);
       setShow(true);
     } else if(toSync) sync([toSync]);
     else setShow(false);

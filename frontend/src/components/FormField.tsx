@@ -11,8 +11,8 @@ type Props = {
   title?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  hint?: string;   // texto informativo
-  error?: string;  // texto de error
+  hint?: string;  
+  error?: string;  
 };
 
 export default function FormField({

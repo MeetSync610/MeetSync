@@ -71,7 +71,7 @@ export default function Schedule({ syncBlocks }: Props) {
 
       if (existingIndex >= 0) {
         const existing = merged[existingIndex];
-        // preferimos el color nuevo (nb.color) si viene; si no, mantenemos el existing.color
+        
         merged[existingIndex] = { ...existing, ...nb, color: nb.color ?? existing.color };
       } else {
         merged.push(nb);
@@ -81,7 +81,7 @@ export default function Schedule({ syncBlocks }: Props) {
     return merged;
   };
 
-  // -------------------- SESIÓN Y BLOQUES --------------------
+  // -------------------- SESION Y BLOQUES --------------------
   useEffect(() => {
     if (!session?.user?.id || syncBlocks) return;
 
@@ -117,10 +117,10 @@ export default function Schedule({ syncBlocks }: Props) {
 
       if (data.success) {
         const serverBlocks: Block[] = Array.isArray(data.blocks) ? data.blocks : [];
-        // Si ya tenemos googleIds, filtramos bloques con googleId que ya no existen en Google
+        
         const filtered = serverBlocks.filter(b => {
-          if (!b.googleId) return true; // local always keep
-          if (!googleIds || googleIds.length === 0) return false; // if we synced before, absent ids are deleted
+          if (!b.googleId) return true; 
+          if (!googleIds || googleIds.length === 0) return false; 
           return googleIds.includes(b.googleId);
         });
 
@@ -149,7 +149,7 @@ export default function Schedule({ syncBlocks }: Props) {
 
   const fetchGoogleEvents = async (): Promise<boolean> => {
     try {
-      // ruta correcta montada en backend -> /api/blocks/calendar/events
+    
       const res = await fetch(`${API_BASE}/blocks/calendar/events`, { credentials: "include" });
       const text = await res.text();
       let data;
@@ -172,7 +172,7 @@ export default function Schedule({ syncBlocks }: Props) {
 
         const currentGoogleIds = googleBlocks.map(b => b.googleId).filter(Boolean) as string[];
         setGoogleIds(currentGoogleIds);
-        // Actualizar Supabase para eliminar rows que ya no existen en Google
+        
         try {
           const resSync = await fetch(`${API_BASE}/blocks/sync-google`, {
             method: "POST",
@@ -187,9 +187,9 @@ export default function Schedule({ syncBlocks }: Props) {
         }
 
         setBlocks(prev => {
-          // 1️⃣ Filtramos prev: eliminamos bloques que ya no existen en Google
+          
           const filteredPrev = prev.filter(b => !b.googleId || currentGoogleIds.includes(b.googleId));
-          // 2️⃣ Merge normal, manteniendo bloques locales
+          
           const nonGooglePrev = filteredPrev.filter(b => !b.googleId);
           return mergeBlocks(nonGooglePrev, googleBlocks);
         });
@@ -209,7 +209,7 @@ export default function Schedule({ syncBlocks }: Props) {
     }
   };
 
-  // Auto-refresh on focus/visibility and optional polling
+
   useEffect(() => {
     const onFocus = () => { if (session?.user?.hasGoogleToken) fetchGoogleEvents(); };
     const onVisibility = () => { if (document.visibilityState === "visible" && session?.user?.hasGoogleToken) fetchGoogleEvents(); };
@@ -265,7 +265,7 @@ export default function Schedule({ syncBlocks }: Props) {
       const data = await res.json().catch(() => ({}));
       if (!data.success) return alert(data.message || "Error guardando bloque");
 
-      // refrescar listados desde backend para evitar duplicados/inconsistencias
+      // refrescar listados desde backend para evitar duplicados
       await fetchUserBlocks();
       if (session?.user?.hasGoogleToken) {
         await fetchGoogleEvents();
@@ -283,12 +283,12 @@ export default function Schedule({ syncBlocks }: Props) {
     const previousBlocks = blocks.slice();
     const blockToDelete = blocks[index];
 
-    // optimista: quitar de UI inmediatamente
+  
     setBlocks(prev => prev.filter((_, i) => i !== index));
     
     if (!syncBlocks) {
     try {
-      // Si tenemos id local, borramos por id (como antes)
+    
       if (blockToDelete.id) {
         const res = await fetch(`${API_BASE}/blocks/${blockToDelete.id}`, {
           method: "DELETE",
@@ -300,7 +300,7 @@ export default function Schedule({ syncBlocks }: Props) {
           let parsed: any = null;
           try { parsed = JSON.parse(text); } catch { /* no JSON */ }
 
-          // Si el servidor indica que ya fue borrado, lo tratamos como éxito (idempotencia)
+          
           if (parsed && parsed.message && /deleted/i.test(parsed.message)) {
             console.warn("Backend: recurso ya eliminado:", parsed.message);
           } else {
@@ -308,7 +308,7 @@ export default function Schedule({ syncBlocks }: Props) {
           }
         }
       } else if (blockToDelete.googleId) {
-        // Si no hay id local pero sí googleId, pedir al backend que borre por google_event_id
+        // Si no hay id local pero si googleId, pedir al backend que borre por google_event_id
         const res = await fetch(`${API_BASE}/blocks/google/${encodeURIComponent(blockToDelete.googleId)}`, {
           method: "DELETE",
           credentials: "include"
@@ -319,7 +319,7 @@ export default function Schedule({ syncBlocks }: Props) {
           throw new Error(`Backend DELETE by googleId failed ${res.status}: ${text || res.statusText}`);
         }
       } else {
-        // ni id ni googleId -> solo local (ya removido de UI)
+        // nada
       }
 
       // refrescar para asegurar UI consistente
@@ -331,7 +331,7 @@ export default function Schedule({ syncBlocks }: Props) {
     } catch (err: any) {
       console.error("deleteBlock error:", err);
 
-      // Si el mensaje de error contiene "deleted", tratamos como éxito y refrescamos
+      // si el mensaje de error tiene "deleted", se toma como exitoso y refrescamos
       if (err.message && /deleted/i.test(err.message)) {
         if (session?.user?.hasGoogleToken) {
           await fetchGoogleEvents();
@@ -341,13 +341,13 @@ export default function Schedule({ syncBlocks }: Props) {
         return;
       }
 
-      // restaurar UI porque la eliminación falló realmente
+      // restaurar UI porque la eliminacion fallo realmente
       setBlocks(previousBlocks);
       alert("No se pudo eliminar el bloque en el servidor. Revisa la consola para más detalles.");
     }}
   };
 
-  // -------------------- NAVEGACIÓN --------------------
+  // -------------------- NAVEGACION --------------------
   const goToToday = () => setCurrentDate(new Date());
   const goPrevWeek = () => setCurrentDate(prev => { const d = new Date(prev); d.setDate(d.getDate()-7); return d; });
   const goNextWeek = () => setCurrentDate(prev => { const d = new Date(prev); d.setDate(d.getDate()+7); return d; });
