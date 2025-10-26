@@ -12,7 +12,7 @@ export default function Login2() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Validación igual que en Login.tsx
+  
   const passRegex = /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}/;
   const passwordError = useMemo(() => {
     if (!password) return undefined;
@@ -110,7 +110,7 @@ export default function Login2() {
           </div>
 
 
-          {/* Solo link a soporte (vos ya lo alineaste a la derecha con .forgot) */}
+          {/* Solo link a soporte */}
           <div className="forgot">
             <Link to="/soporte">¿Olvidaste tu contraseña?</Link>
           </div>
@@ -119,7 +119,7 @@ export default function Login2() {
             Login
           </button>
 
-          {/* Error de autenticación (reutiliza tu estilo global si existe) */}
+          {/* Error de autenticacion */}
           {error && (
             <p className="login__error" role="alert" aria-live="polite">
               {error}

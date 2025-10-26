@@ -7,7 +7,7 @@ import Faq from "./Faq";
 import useIsMobile from "../hooks/useIsMobile";
 
 export default function HomeLanding() {
-  const isMobile = useIsMobile(); // <=960px
+  const isMobile = useIsMobile();
 
   return (
     <>

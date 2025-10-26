@@ -71,7 +71,7 @@ router.post("/upsert", requireLogin, async (req, res) => {
 
     const block = result.data;
 
-    // Google Calendar: intentar sincronizar desde backend si hay tokens (no fallar la petición por error de Google)
+    // Google Calendar: intentar sincronizar desde backend si hay tokens 
     try {
       const oauth2Client = getGoogleClient(req);
       if (oauth2Client) {
@@ -97,7 +97,7 @@ router.post("/upsert", requireLogin, async (req, res) => {
             },
           });
 
-          // Guardar google_event_id si se creó
+          // Guardar google_event_id si se creo
           if (gEvent.data?.id) {
             await supabaseAdmin.from("blocks").update({ google_event_id: gEvent.data.id }).eq("id", block.id);
             block.google_event_id = gEvent.data.id;
@@ -106,7 +106,7 @@ router.post("/upsert", requireLogin, async (req, res) => {
       }
     } catch (gErr) {
       console.warn("Google sync (upsert) warning:", gErr?.message || gErr);
-      // no abortamos la petición principal
+      // no abortamos la peticion principal
     }
 
     res.json({ success: true, block });
@@ -132,7 +132,7 @@ router.put("/:id", requireLogin, async (req, res) => {
       .single();
     if (error) throw error;
 
-    // Intentar actualizar en Google si corresponde (non-fatal)
+    // Intentar actualizar en Google si corresponde 
     try {
       const oauth2Client = getGoogleClient(req);
       if (oauth2Client && block.google_event_id) {
@@ -164,7 +164,7 @@ router.delete("/:id", requireLogin, async (req, res) => {
   const userId = req.session?.user?.id;
 
   try {
-    // obtener bloque (si no existe, tratamos como idempotente)
+    // obtener bloque 
     const { data: block, error: selectErr } = await supabaseAdmin
       .from("blocks")
       .select("id, google_event_id")
@@ -174,7 +174,7 @@ router.delete("/:id", requireLogin, async (req, res) => {
 
     if (selectErr) throw selectErr;
 
-    // Si no existe la fila -> success idempotente
+  
     if (!block) {
       return res.json({ success: true, message: "Resource already deleted" });
     }
@@ -188,7 +188,7 @@ router.delete("/:id", requireLogin, async (req, res) => {
 
     if (delErr) throw delErr;
 
-    // Intentar eliminar evento en Google si estaba asociado (no fatal)
+    // Intentar eliminar evento en Google si estaba asociado 
     try {
       const oauth2Client = getGoogleClient(req);
       if (oauth2Client && block.google_event_id) {
@@ -204,7 +204,7 @@ router.delete("/:id", requireLogin, async (req, res) => {
         return res.json({ success: true, message: "Deleted local row; event not found in Google" });
       }
 
-      // For other Google errors, respond ok but indicate google error (avoid 500)
+    
       return res.status(200).json({ success: false, message: "Error eliminando evento en Google", details: msg });
     }
 
@@ -231,7 +231,7 @@ router.delete("/google/:googleId", requireLogin, async (req, res) => {
 
     if (selectErr) throw selectErr;
 
-    // Si no hay fila en DB, intentamos al menos borrar el evento en Google (non-fatal) y devolvemos success
+    // Si no hay fila en DB, intentamos al menos borrar el evento en Google y devolvemos success
     if (!block) {
       try {
         const oauth2Client = getGoogleClient(req);
@@ -261,7 +261,7 @@ router.delete("/google/:googleId", requireLogin, async (req, res) => {
 
     if (delErr) throw delErr;
 
-    // eliminar en Google si corresponde (no fatal)
+    // eliminar en Google si corresponde 
     try {
       const oauth2Client = getGoogleClient(req);
       if (oauth2Client && block.google_event_id) {
@@ -324,7 +324,7 @@ router.get("/calendar/events", requireGoogleAuth, async (req, res) => {
   }
 });
 
-// Crear evento Google (si se usa desde frontend directo; backend upsert también crea event)
+// Crear evento Google
 router.post("/calendar", requireGoogleAuth, async (req, res) => {
   const oauth2Client = req.oauth2Client;
   const { day, start, finish, summary } = req.body;
@@ -342,7 +342,7 @@ router.post("/calendar", requireGoogleAuth, async (req, res) => {
       },
     });
 
-    // Guardar en supabase también
+    // Guardar en supabase 
     await supabaseAdmin.from("blocks").insert({
       user_id: req.session.user.id,
       summary,
@@ -361,7 +361,7 @@ router.post("/calendar", requireGoogleAuth, async (req, res) => {
   }
 });
 
-// Eliminar evento Google directo (maneja errores sin 500)
+// Eliminar evento Google directo (errores sin 500)
 router.delete("/calendar/:id", requireLogin, async (req, res) => {
   const { id } = req.params;
   const userId = req.session?.user?.id;
@@ -400,12 +400,12 @@ router.delete("/calendar/:id", requireLogin, async (req, res) => {
       return res.json({ success: true, message: "Evento no encontrado en Google, eliminado localmente" });
     }
 
-    // no devolvemos 500 para evitar romper la UX; frontend mostrará warning y forzará refresh
+    // no devolvemos 500 para evitar romper la UX; frontend mostrara warning y forzara refresh
     return res.status(200).json({ success: false, message: "Error eliminando evento", details: msg });
   }
 });
 
-// Sincronización Google → Supabase (upsert + limpieza)
+// Sincronizacion Google 
 router.post("/sync-google", requireLogin, async (req, res) => {
   const oauth2Client = getGoogleClient(req);
   if (!oauth2Client) return res.status(200).json({ success: false, message: "Sin Google" });

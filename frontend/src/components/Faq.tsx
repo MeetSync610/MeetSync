@@ -2,13 +2,12 @@ import "../styles/Faq.css";
 import { useRef, useEffect } from "react";
 import { ChevronDown, MessageCircleQuestionMark } from "lucide-react";
 
-/** Abre (0 -> scrollHeight -> auto) o cierra (altura -> 0) con transición */
+
 function openWithAnimation(details: HTMLDetailsElement, panel: HTMLDivElement) {
-  // abrir
+
   details.setAttribute("open", "");
   panel.style.height = "0px";
-  // reflow
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+
   panel.offsetHeight;
   panel.style.height = panel.scrollHeight + "px";
 
@@ -20,11 +19,11 @@ function openWithAnimation(details: HTMLDetailsElement, panel: HTMLDivElement) {
 }
 
 function closeWithAnimation(details: HTMLDetailsElement, panel: HTMLDivElement) {
-  // cerrar (mantener open hasta que termine la animación)
+
   const current = panel.scrollHeight;
   panel.style.height = current + "px";
-  // reflow
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+ 
+
   panel.offsetHeight;
   panel.style.height = "0px";
 
@@ -49,18 +48,18 @@ function FaqItem({ q, a }: ItemProps) {
   }, []);
 
   const handleToggleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
-  e.preventDefault(); // evitamos el toggle nativo para animar el cierre
+  e.preventDefault();
   const d = detailsRef.current!;
   const p = panelRef.current!;
 
   if (d.open) {
-    // Si estaba abierto, cerramos con animación
+    
     closeWithAnimation(d, p);
   } else {
-    // 1) Abrimos el actual con animación
+    
     openWithAnimation(d, p);
 
-    // 2) Cerramos cualquier otro <details> abierto del mismo .faq__list
+   
     const list = d.closest(".faq__list");
     const openItems =
       list?.querySelectorAll<HTMLDetailsElement>("details[open]") ?? [];
@@ -78,7 +77,7 @@ function FaqItem({ q, a }: ItemProps) {
 };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // accesible: Enter o Space
+    // espacio o enter
     if (e.key === "Enter" || e.key === " ") {
       handleToggleClick(e);
     }
@@ -98,7 +97,7 @@ function FaqItem({ q, a }: ItemProps) {
         <ChevronDown size={18} aria-hidden className="faq__chevron" />
       </summary>
 
-      {/* Panel animado por height (se cierra SUAVE antes de quitar open) */}
+      {/* Cerrado suave */}
       <div ref={panelRef} className="faq__panel">
         <div className="faq__content">{a}</div>
       </div>

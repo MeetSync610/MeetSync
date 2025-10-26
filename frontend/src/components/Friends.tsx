@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 import FriendCard from "./FriendCard";
 import FriendStatusCard from "./FriendStatusCard";
 import { useAuthContext } from "../contexts/AuthContext";
-import { supabase } from "../supabaseClient"; // asegúrate de importar Supabase aquí
+import { supabase } from "../supabaseClient";
 import { Users, UserPen } from "lucide-react";
 
 export default function Friends() {
@@ -25,7 +25,7 @@ export default function Friends() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
 
-  // -------------------- Búsqueda --------------------
+  // -------------------- Busqueda --------------------
   const handleSearch = (query: string) => {
     if (!query) {
       setSearching(false);
@@ -51,7 +51,7 @@ export default function Friends() {
     try {
       await sendFriendRequest(friendId);
 
-      // 🔄 Refrescar solicitudes y amigos
+      // Refrescar solicitudes y amigos
       await loadPendingFriendRequests(userProfile.id);
       await loadFriends(userProfile.id);
 
@@ -67,7 +67,7 @@ export default function Friends() {
     try {
       await acceptFriendRequest(requestId);
 
-      // 🔄 Refrescar solicitudes y amigos
+      // Refrescar solicitudes y amigos
       await loadPendingFriendRequests(userProfile.id);
       await loadFriends(userProfile.id);
 
@@ -83,7 +83,7 @@ export default function Friends() {
     try {
       await rejectFriendRequest(requestId);
 
-      // 🔄 Refrescar solicitudes pendientes
+      // Refrescar solicitudes pendientes
       await loadPendingFriendRequests(userProfile.id);
 
     } catch (err: any) {
@@ -97,7 +97,7 @@ export default function Friends() {
     const userId = userProfile.id;
 
     try {
-      // 1️⃣ Eliminar de la tabla friends
+      
       await supabase
         .from("friends")
         .delete()
@@ -105,7 +105,7 @@ export default function Friends() {
           `and(user_id.eq.${userId},friend_id.eq.${friendId}),and(user_id.eq.${friendId},friend_id.eq.${userId})`
         );
 
-      // 2️⃣ Actualizar la solicitud original a 'rejected' para poder volver a enviar
+      
       await supabase
         .from("friend_requests")
         .update({ status: "rejected" })
@@ -113,7 +113,7 @@ export default function Friends() {
           `and(sender_id.eq.${userId},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${userId})`
         );
 
-      // 3️⃣ Refrescar las listas de amigos y solicitudes pendientes
+     
       await loadFriends(userId);
       await loadPendingFriendRequests(userId);
 
@@ -125,7 +125,7 @@ export default function Friends() {
     }
   };
 
-  // -------------------- Función auxiliar --------------------
+  // -------------------- Funcion auxiliar --------------------
   const getRequestStatus = (profileId: string) => {
     return pendingFriendRequests.find(r =>
       (r.sender_id === userProfile?.id && r.receiver_id === profileId) ||
@@ -149,7 +149,7 @@ export default function Friends() {
 
         <SearchBar placeholder="Buscar personas..." onChange={handleSearch} />
 
-        {/* ---------- Resultados de búsqueda ---------- */}
+        {/* Resultados de busqueda */}
         {searching && (
           <div className="friends__search-results">
             {searchResults.map(profile => {
@@ -170,7 +170,7 @@ export default function Friends() {
           </div>
         )}
 
-        {/* ---------- Solicitudes pendientes ---------- */}
+        {/* Solicitudes pendientes */}
         <h3 className="profile__title"> <UserPen className="icon-sky"/> Solicitudes de amistad</h3>
         {pendingFriendRequests.filter(r => r.receiver_id === userProfile?.id).length > 0 ? (
           pendingFriendRequests
@@ -194,7 +194,7 @@ export default function Friends() {
           <p>No tienes solicitudes pendientes</p>
         )}
 
-        {/* ---------- Amigos ---------- */}
+        {/* Amigos */}
         <h3 className="profile__title"> <Users className="icon-sky"/> Tus amigos</h3>
         <div className="profile__friends">
           {friends.length > 0 ? (

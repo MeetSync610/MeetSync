@@ -4,8 +4,8 @@ type Mode = "radio" | "checkbox";
 type Props = {
   name: string;
   mode: Mode;
-  group?: string;        // name del radio group
-  onChange?: () => void; // mock
+  group?: string;       
+  onChange?: () => void; 
 };
 
 export default function PersonPickItem({ name, mode, group = "group", onChange }: Props) {

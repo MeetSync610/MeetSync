@@ -61,7 +61,7 @@ export default function Register() {
     passwordOk &&
     !submitting;
 
-  // submit con supabase (idéntico flujo a tu register anterior)
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTouched(true);
@@ -71,11 +71,11 @@ export default function Register() {
     setSubmitting(true);
 
     try {
-      // 1) Sign up
+      // Sign up
       const { error: signUpError } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,
-        // opcional: enviar metadatos; si tu backend los usa podés leerlos luego
+        
         options: {
           data: {
             full_name: name.trim(),
@@ -91,7 +91,7 @@ export default function Register() {
         return;
       }
 
-      // 2) Iniciar sesión automáticamente (como en tu versión previa)
+      // Iniciar sesion automaticamente
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
@@ -104,7 +104,7 @@ export default function Register() {
         return;
       }
 
-      // 3) Listo
+      
       alert("✅ Registro exitoso! Ahora podés iniciar sesión.");
       navigate("/login");
     } catch (err: any) {

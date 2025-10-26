@@ -63,7 +63,7 @@ export default function Nav() {
               <LinkIcon size={18}/> Crear sincronización
             </NavLink>
 
-            {/* Botón Entrar / Cerrar sesión */}
+            {/* Boton Entrar / Cerrar sesion */}
             {session ? (
               <button className="btn-outline btn-primary" onClick={logout}>
                 Cerrar sesión
@@ -90,7 +90,7 @@ export default function Nav() {
 
           </div>
 
-          {/* Toggle móvil */}
+          {/* Toggle movil */}
           <button
             className="nav__toggle"
             aria-controls="navmenu"
@@ -103,7 +103,7 @@ export default function Nav() {
         </nav>
       </div>
 
-      {/* Panel móvil */}
+      {/* Panel movil */}
       <div className={`nav__mobile ${open ? "is-open" : ""}`} id="navmenu" role="dialog" aria-modal="true">
         <div className="nav__mobile-inner">
           <button className="nav__mobile-close" aria-label="Cerrar menú" onClick={() => setOpen(false)}>
@@ -126,7 +126,7 @@ export default function Nav() {
               <LinkIcon size={18}/> Crear sincronización
             </NavLink>
 
-            {/* Botón Entrar / Cerrar sesión móvil */}
+            {/* Boton Entrar / Cerrar sesion movil */}
             {session ? (
               <button onClick={() => { logout(); setOpen(false); }} className="nav__m-btn nav__m-btn--primary">
                 Cerrar sesión

@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
   const [syncBlocks, setSyncBlocks] = useState<Block[]>([]);
 
-  // ------------------- Inicialización -------------------
+  // ------------------- Inicializacion -------------------
   useEffect(() => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
         .select()
         .single();
       if (insertError) {
-        // Si es duplicado, simplemente cargamos el perfil existente
+        // si es duplicado, cargamos el perfil existente
         console.log("Perfil ya existe, se omite inserción");
         setUserProfile(await supabase.from("profiles").select("*").eq("id", userId).single().then(r => r.data));
       } else setUserProfile(insertData);
@@ -244,7 +244,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
   const userId = session.user.id;
 
   try {
-    // Eliminar amistad (simétrica)
+    // Eliminar amistad
     const [user1, user2] = [userId, friendId].sort();
     await supabase
       .from("friends")
@@ -277,7 +277,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
       .update({ status: "accepted" })
       .eq("id", requestId);
 
-    // Insertar amistad una sola vez (simétrica)
+    // Insertar amistad una sola vez
     const [user1, user2] = [session.user.id, req.sender_id].sort();
     const { error } = await supabase
       .from("friends")
@@ -324,7 +324,7 @@ export const AuthProvider = ({ children }: { children: any }) => {
     const { data, error } = await supabase.rpc('sync', { ids });
 
     if (error) throw error;
-    // Aquí convertimos manualmente los datos a Block[]
+    // Aqui convertimos manualmente los datos a Block[]
     const blocks: Block[] = (data || []).map((b: any) => ({
       id: b.id,
       day: b.day,
