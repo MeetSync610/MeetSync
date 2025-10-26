@@ -11,7 +11,7 @@
 
 .faq__list{ display: grid; gap: .75rem; }
 
-/* tarjeta/acordeón */
+/* tarjeta/acordeon */
 .faq__item{
   border-radius: 1rem;
   border: 1px solid rgba(51,65,85,.6);
@@ -39,11 +39,11 @@
 }
 .faq__item[open] .faq__chevron{ transform: rotate(180deg); }
 
-/* --- HOVER / CLICK (solo mientras clickeás) --- */
+/* HOVER / CLICK*/
 .faq__summary:hover{ background: var(--bg); }
-.faq__summary:active{ background: var(--bg); } /* mismo color que hover */
+.faq__summary:active{ background: var(--bg); }
 
-/* --- PANEL ANIMADO POR HEIGHT --- */
+/* PANEL ANIMADO POR HEIGHT */
 .faq__panel{
   height: 0;                 /* cerrado */
   overflow: clip;            /* oculta contenido fuera de height */

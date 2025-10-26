@@ -1,4 +1,4 @@
-/* ==== VISTA SEMANAL (DESKTOP POR DEFECTO) ==== */
+/*VISTA SEMANAL (DESKTOP POR DEFECTO)*/
 .calendar-week {
   display: grid;
   grid-template-columns: 56px repeat(7, minmax(0, 1fr)); /* hora + 7 días, fluidas */
@@ -15,14 +15,12 @@
 .calendar-month {
   display: grid;
   grid-auto-rows: 56px;
-  /* ❌ Antes: min-width: 900px; => obligaba a scroll horizontal en pantallas chicas
-     ✅ Ahora lo anulamos para que la grilla sea fluida */
   min-width: 0;
   border-top: 1px solid rgba(71,85,105,.5);
   border-right: 1px solid rgba(71,85,105,.3);
 }
 
-/* ==== VISTA MENSUAL (DESKTOP POR DEFECTO) ==== */
+/*VISTA MENSUAL (DESKTOP POR DEFECTO) */
 .calendar-month {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   overflow-y: auto;
@@ -30,7 +28,7 @@
   width: 100%;
 }
 
-/* Encabezados de días */
+/* Encabezados de dias */
 .calendar__day {
   display: flex;
   align-items: center;
@@ -59,7 +57,7 @@
   border-right: 1px solid rgba(71,85,105,.3);
   border-bottom: 1px solid rgba(71,85,105,.5);
   position: relative;
-  overflow: hidden;               /* evita desbordes en mobile */
+  overflow: hidden;
 }
 
 /* Bloques ocupados (semana/mensual) */
@@ -89,7 +87,7 @@
   white-space: nowrap;
 }
 
-/* ======== RESPONSIVE (TABLET/MOBILE) ======== */
+/*RESPONSIVE (TABLET/MOBILE)*/
 @media (max-width: 1024px) {
   .calendar-week {
     grid-template-columns: 48px repeat(7, minmax(0, 1fr));
@@ -102,7 +100,7 @@
 @media (max-width: 768px) {
   .calendar-week {
     grid-template-columns: 40px repeat(7, minmax(0, 1fr)); /* todas las columnas entran sin scroll */
-    grid-auto-rows: 44px;                                   /* filas más bajas */
+    grid-auto-rows: 44px;
   }
 
   .calendar__day {
@@ -115,7 +113,7 @@
     padding: 0 .25rem;
   }
 
-  /* Texto de bloques más compacto y con ellipsis */
+  /* Texto de bloques mas compacto y con ellipsis */
   .calendar__cell span {
     display: block;
     font-size: .7rem;
@@ -126,14 +124,12 @@
     white-space: nowrap;
   }
 
-  /* Botoneras microscópicas en la celda ocupada */
+  /* botoneras full chiquitas kjj*/
   .calendar__cell .lucide {
     width: 14px;
     height: 14px;
   }
 }
-
-/* Opcional: aún más compacto en teléfonos muy chicos */
 @media (max-width: 380px) {
   .calendar-week {
     grid-template-columns: 36px repeat(7, minmax(0, 1fr));

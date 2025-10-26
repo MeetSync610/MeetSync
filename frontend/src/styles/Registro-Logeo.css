@@ -1,44 +1,41 @@
 :root{
-  /* === PALETA PRINCIPAL === */
-  --color-bg: #0e172a;          /* Fondo general - Azul oscuro */
-  --color-form-bg: #182544;     /* Base del form (referencia de tono) */
-  --color-text: #E1E7EF;        /* Texto / líneas - Blanco grisáceo */
-  --color-accent: #38BEF8;      /* Acentos / foco / iluminados - Celeste */
+  --color-bg: #0e172a;
+  --color-form-bg: #182544;
+  --color-text: #E1E7EF;
+  --color-accent: #38BEF8;
 
-  /* === TIPOGRAFÍAS === */
   --h2-font-size: 2em;
   --small-font-size:1em;
   --medium-font-size:1.2em;
   --smaller-font-size:0.9em;
 }
 
-/* Lienzo del login (cubre toda la pantalla y evade padding del layout padre) */
 .login2{
-  position: fixed;     /* clave: saca del flujo del layout global */
-  inset: 0;            /* top/right/bottom/left: 0 */
+  position: fixed;
+  inset: 0;
   width: 100vw;
-  height: 100dvh;      /* viewport real en móviles */
+  height: 100dvh; 
   display: grid;
-  place-items: center; /* centro perfecto */
+  place-items: center; 
   background: var(--color-bg);
-  overflow: hidden;    /* sin scroll */
-  isolation: isolate;  /* capas internas separadas */
+  overflow: hidden;  
+  isolation: isolate; 
 }
 
-/* Video y overlay confinados al lienzo del login (no al body) */
+
 .bg-video{
-  position: absolute;  /* antes estaba fixed: ahora vive dentro de .login2 */
+  position: absolute;  /* antes estaba fixed: ahora vive dentro de .login */
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   z-index: -2;
   pointer-events: none;
-  background: var(--color-bg); /* fallback si falla el video */
+  background: var(--color-bg);
 }
 
 .bg-overlay{
-  position: absolute;  /* también dentro de .login2 */
+  position: absolute; 
   inset: 0;
   z-index: -1;
   background: linear-gradient(
@@ -47,16 +44,14 @@
     rgba(14, 23, 42, 0.35)
   );
 }
-/* Respeto accesibilidad si el usuario pide menos movimiento/datos */
 @media (prefers-reduced-motion: reduce){ .bg-video{ display:none; } }
 @media (prefers-reduced-data: reduce){ .bg-video{ display:none; } }
 
-/* ===== Contenedor con efecto blur (glassmorphism) ===== */
-/* Card con límites de viewport para no empujar scroll en pantallas bajas */
+
 .login-container{
   position: relative;
   width: min(400px, 92vw);
-  height: min(450px, 80dvh); /* límite seguro dentro del alto de pantalla */
+  height: min(450px, 80dvh); 
   background: rgba(24, 37, 68, 0.28);
   backdrop-filter: blur(14px) saturate(130%);
   -webkit-backdrop-filter: blur(14px) saturate(130%);
@@ -76,7 +71,6 @@ h2{
   transition: 0.5s ease;
 }
 
-/* ===== Campos ===== */
 .input-box{
   position: relative;
   width: 310px;
@@ -84,7 +78,6 @@ h2{
   text-align: left;
 }
 
-/* Línea inferior (glow solo con focus o texto) */
 .input-box .input-line{
   position: absolute;
   width: 100%;
@@ -102,7 +95,6 @@ h2{
   opacity: 1;
 }
 
-/* Label flotante (placeholder) */
 .input-box label{
   position: absolute;
   top: 50%;
@@ -119,7 +111,7 @@ h2{
   opacity: .95;
 }
 
-/* Input */
+
 .input-box input{
   width: 100%;
   height: 50px;
@@ -132,7 +124,7 @@ h2{
   transition: 0.35s ease;
 }
 
-/* Ícono (Lucide) alineado al centro vertical */
+
 .input-box .icon{
   position: absolute;
   right: 8px;
@@ -144,7 +136,6 @@ h2{
   opacity: .9;
 }
 
-/* Extra */
 .forgot{
   display: flex;
   justify-content: flex-end;
@@ -165,7 +156,7 @@ h2{
   text-decoration: underline;
 }
 
-/* Botón */
+
 button{
   width: 100%;
   height: 40px;
@@ -183,7 +174,7 @@ button:hover{
   filter: brightness(1.03);
 }
 
-/* Links */
+
 .register-link{
   color: var(--color-text);
   font-size: var(--smaller-font-size);
@@ -200,7 +191,6 @@ button:hover{
   text-decoration: underline;
 }
 
-/* ===== Eliminamos el viejo toggle/checkbox visual ===== */
 .input-check,
 .toggle{
   display: none !important;
@@ -209,18 +199,16 @@ button:hover{
   display: none !important;
 }
 
-/* Altura base (login) */
+
 .login-container{
-  height: auto;      /* se adapta al contenido */
-  min-height: 450px; /* altura similar a login */
+  height: auto;     
+  min-height: 450px;
 }
 
-/* Solo register: un poquito más alto */
 .login-container--tall{
-  min-height: 560px; /* ajustá el número si querés más/menos */
+  min-height: 560px;
 }
 
-/* --- ESTILOS DE ERROR --- */
 .input-box.error input {
   border-color: #ff4d4d;
   box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
@@ -249,7 +237,6 @@ button:hover{
   animation: fadeIn 0.3s ease;
 }
 
-/* Pequeñas animaciones */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-2px); }
@@ -265,7 +252,7 @@ button:hover{
 .login-container form {
   display: flex;
   flex-direction: column;
-  align-items: center; /* centra los campos horizontalmente */
+  align-items: center; 
   width: 100%;
   padding: 20px 0;
   text-align: center;

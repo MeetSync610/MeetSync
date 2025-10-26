@@ -18,7 +18,7 @@
   font-size: 2rem;
   font-weight: 600;
   margin: 0 0 2.5rem 0;
-  text-align: center;   /* 👈 esto */
+  text-align: center; 
 }
 
 .authcard__body { display: block; }

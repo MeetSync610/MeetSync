@@ -92,9 +92,9 @@
   text-align: center;
   display: inline-flex;
   justify-content: center;
-   width: 100%;     /* Fuerza el mismo ancho de extremo a extremo */
+   width: 100%;
   padding: 0.7rem 1rem;
-  box-sizing: border-box;  /* Asegura que padding no rompa el ancho */
+  box-sizing: border-box; 
   text-align: center;
 }
 

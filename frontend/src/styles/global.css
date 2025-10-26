@@ -1,3 +1,6 @@
+/*Algunos arreglos hechos con chat gpt porq algo andaba mal y para mejor organizacion*/
+
+
 :root {
   --bg: #0f172a;
   --text: #e2e8f0;
@@ -26,14 +29,12 @@ body.dark, #root.dark {
 
 
 
-/* Reset básico */
+/* Reset basico */
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
 body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
 
-/* correciones con chat gpt ya que algo andaba mal */
-
-/* Reset básico */
+/* Reset basico */
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
 body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
@@ -43,10 +44,10 @@ body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial
 .App { min-height: 100%; display: flex; flex-direction: column; }
 .App > main { flex: 1; }
 
-/* Utilidad de contenedor (si la querés reutilizar) */
+/* Utilidad de contenedor*/
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
 
-/* Botones compartidos (mismo look que tenías) */
+/* Botones compartidos */
 .btn-primary {
   display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.25rem;
   border-radius:.75rem; color:#f8fafc; text-decoration:none;
@@ -60,7 +61,6 @@ body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial
   border-radius:.75rem; color:#e2e8f0; text-decoration:none; border:1px solid #334155;
 }
 
-/* Sync.css o Global.css */
 body.light .sync .btn-outline {
   color: var(--text);     /* texto blanco */
 }
@@ -80,14 +80,14 @@ h1, h2, h3 { margin: 0; }
 /* Base normal (notebook) */
 html { font-size: 16px; }
 
-/* Monitor grande: simular zoom ~125% */
+/* Monitor grande:*/
 @media (min-width: 1400px) and (min-height: 800px) {
-  html { font-size: 20px; }  /* 16px -> 20px = 125% */
+  html { font-size: 20px; }
 }
 
-/* Ultra-wide (opcional, por si tenés 2K/4K y querés un pelín más) */
+/* Ultra-wide*/
 @media (min-width: 1800px) and (min-height: 900px) {
-  html { font-size: 21px; }  /* ~131% */
+  html { font-size: 21px; } 
 }
 
 /* Forzar fondo oscuro en modo dark */
@@ -96,13 +96,13 @@ body.dark .formfield input,
 body.dark .formfield textarea {
   background: var(--dark-card-bg) !important;
   backdrop-filter: blur(6px);
-  border-radius: 1rem; /* opcional, igual que tus cards */
+  border-radius: 1rem;
 }
 
 
 /* Fondo y sombra para los items FAQ (summary) en modo dark */
 body.dark .faq__summary {
-  background: #02061766;  /* mismo color que tenías */
+  background: #02061766; 
   backdrop-filter: blur(6px);
   border-radius: 1rem;
   padding: 1rem 1.1rem;
@@ -110,17 +110,17 @@ body.dark .faq__summary {
   transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
 }
 
-/* Hover: resplandor idéntico al original */
+/* resplandor */
 body.dark .faq__summary:hover {
-  background: #020617aa;  /* un poquito más brillante que el original */
+  background: #020617aa;  
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px);
 }
 
 
-/* --- FAQ Items modo claro --- */
+/*FAQ Items modo claro*/
 body.light .faq__summary {
-  background: rgba(240, 241, 244, 0.4); /* fondo semitransparente claro */
+  background: rgba(240, 241, 244, 0.4); 
   backdrop-filter: blur(6px);
   border-radius: 1rem;
   padding: 1rem 1.1rem;
@@ -129,12 +129,11 @@ body.light .faq__summary {
 }
 
 body.light .faq__summary:hover {
-  background: rgba(240, 241, 244, 0.67); /* un poco más brillante al pasar el mouse */
+  background: rgba(240, 241, 244, 0.67); 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px);
 }
 
-/* --- Botones con sombra en hover --- */
 
 /* Botones modo oscuro */
 body.dark .btn-outline:hover,
@@ -151,7 +150,7 @@ body.light .btn-secondary:hover {
 }
 
 
-/* Asegurarse que todos los botones y links tipo botón tengan cursor pointer */
+/* Asegurarse que todos los botones y links tipo boton tengan cursor pointer */
 button,
 input[type="button"],
 input[type="submit"],
@@ -160,27 +159,27 @@ a.btn-theme {
   cursor: pointer;
 }
 
-/* Hover: efecto de iluminación */
+/* efecto de iluminación */
 button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 a.btn-outline:hover,
 a.btn-theme:hover {
   transform: translateY(-1px); /* se levanta un poquito */
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); /* efecto de resplandor/iluminación */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35); 
 }
 
 
 /* Navbar modo oscuro */
 body.dark .nav-header {
-  background-color: rgba(15, 23, 42, 0.7); /* azul oscuro semi-transparente */
+  background-color: rgba(15, 23, 42, 0.7);
   backdrop-filter: blur(8px);
   color: var(--text);
 }
 
 /* Navbar modo claro */
 body.light .nav-header {
-  background-color: rgba(248, 250, 252, 0.7); /* blanco semi-transparente */
+  background-color: rgba(248, 250, 252, 0.7); 
   backdrop-filter: blur(8px);
   color: var(--text);
 }
