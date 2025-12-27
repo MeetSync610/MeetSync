@@ -46,6 +46,17 @@ Los usuarios marcan su disponibilidad semanal, conectan con amigos y (en futuras
 - **Estilos:** CSS modular.  
 - **Íconos:** lucide-react
 - **Control de versiones:** Git/GitHub
+- **Node.js** (API)
+- **SupaBase** Base de Datos
 
-> Futuro: **Node.js** (API), **SQL Server** (DB).
+> Host principal: **OnRender**
 
+## 👤 Contributors
+
+- **Shounil ** Sosa Thiago (frontend y founder)
+- **Sancol610 ** Santino Colombo (backend y BD)
+- **caetanoiman ** Caetano Imanol (backend y BD)
+
+> Comunicacion: Via **Discord** y **Trello**
+
+---
