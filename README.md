@@ -53,9 +53,9 @@ Los usuarios marcan su disponibilidad semanal, conectan con amigos y (en futuras
 
 ## 👤 Contributors
 
-- **Shounil ** Sosa Thiago (frontend y founder)
-- **Sancol610 ** Santino Colombo (backend y BD)
-- **caetanoiman ** Caetano Imanol (backend y BD)
+- **Shounil** Sosa Thiago (frontend y founder)
+- **Sancol610** Santino Colombo (backend y BD)
+- **caetanoiman** Caetano Imanol (backend y BD)
 
 > Comunicacion: Via **Discord** y **Trello**
 
